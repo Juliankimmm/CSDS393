@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile - Collegym</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="#">Collegym</a>
+    </nav>
+    <div class="container mt-5">
+        <h2>{{ user.username }}'s Profile</h2>
+        <p><strong>Bio:</strong> {{ user.bio }}</p>
+        <p><strong>Personal Records:</strong> {{ user.pr }}</p>
+        <p><strong>Social Media:</strong> {{ user.social_media }}</p>
+        <a href="/workout_log" class="btn btn-primary">Log a Workout</a>
+        <a href="/group" class="btn btn-secondary">Groups</a>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
