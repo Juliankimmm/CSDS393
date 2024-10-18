@@ -23,15 +23,18 @@ def login():
 @main.route('/profile/<int:user_id>')
 def profile(user_id):
     user = User.query.get_or_404(user_id)
-    return render_template('profile.html', user=user)
+    workout_logs = WorkoutLog.query.filter_by(user_id=user_id).all()
+    return render_template('profile.html', user=user, workout_logs=workout_logs)
 
 @main.route('/workout_log', methods=['GET', 'POST'])
 def workout_log():
     if request.method == 'POST':
         user_id = request.form['user_id']
-        exercises = request.form['exercises']
-        notes = request.form['notes']
-        workout_log = WorkoutLog(user_id=user_id, exercises=exercises, notes=notes)
+        exercise = request.form['exercise']
+        reps = request.form['reps']
+        weight = request.form['weight']
+        rpe = request.form['rpe']
+        workout_log = WorkoutLog(user_id=user_id, exercise=exercise, reps=reps, weight=weight, rpe=rpe)
         db.session.add(workout_log)
         db.session.commit()
         return redirect(url_for('main.profile', user_id=user_id))

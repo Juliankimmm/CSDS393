@@ -12,9 +12,12 @@ class User(db.Model):
 
 class WorkoutLog(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    exercises = db.Column(db.String(300))
-    notes = db.Column(db.String(300))
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    exercise = db.Column(db.String(100))  # Add this line
+    reps = db.Column(db.Integer)          # Add this line
+    weight = db.Column(db.Float)          # Add this line
+    rpe = db.Column(db.Float)             # Add this line
+    notes = db.Column(db.String(255))     # If needed for additional notes
 
 class Group(db.Model):
     id = db.Column(db.Integer, primary_key=True)
