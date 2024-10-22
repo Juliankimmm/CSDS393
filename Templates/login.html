@@ -22,6 +22,7 @@
                 <input type="password" class="form-control" id="password" name="password" required>
             </div>
             <button type="submit" class="btn btn-primary">Login</button>
+            <button type="button" class="btn btn-secondary ml-2" data-toggle="modal" data-target="#createAccountModal">Don't Have an Account?</button>
         </form>
     </div>
 
@@ -43,51 +44,38 @@
         </ul>
     </nav>
 
+     <!-- Create Account Button -->
+     <div class="modal fade" id="createAccountModal" tabindex="-1" role="dialog" aria-labelledby="createAccountModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="createAccountModalLabel">Create Account</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="createAccountForm">
+                        <div class="form-group">
+                            <label for="new-username">Username</label>
+                            <input type="text" class="form-control" id="new-username" name="new-username" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="new-password">Password</label>
+                            <input type="password" class="form-control" id="new-password" name="new-password" required>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" onclick="submitCreateAccount()">Create Account</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>
-4. Profile Page (profile.html)
-html
-Copy code
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Profile - Collegym</title>
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-</head>
-<body>
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <a class="navbar-brand" href="#">Collegym</a>
-    </nav>
-    <div class="container mt-5">
-        <h2>{{ user.username }}'s Profile</h2>
-        <p><strong>Bio:</strong> {{ user.bio }}</p>
-        <p><strong>Personal Records:</strong> {{ user.pr }}</p>
-        <p><strong>Social Media:</strong> {{ user.social_media }}</p>
-        <a href="/workout_log" class="btn btn-primary">Log a Workout</a>
-        <a href="/group" class="btn btn-secondary">Groups</a>
-    </div>
-
-    <!-- Bottom Navigation Bar -->
-    <nav class="navbar fixed-bottom navbar-light bg-light">
-        <ul class="nav nav-pills nav-justified w-100">
-            <li class="nav-item">
-                <a class="nav-link active" href="/profile">Profile</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="/group">Groups</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="/workout_log
-
-
-
-
-
-
-
-
