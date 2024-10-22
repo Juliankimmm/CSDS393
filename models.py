@@ -28,11 +28,6 @@ class Group(db.Model):
     name = db.Column(db.String(150), unique=True, nullable=False)
     description = db.Column(db.String(300))
 
-    """
-    privacy_settings = db.Column(db.String(50)) 
-    members = db.relationship('User', secondary=group_members, lazy='dynamic')
-    """
-
     def __init__(self, name, description="", privacy_settings="public"):
         self.name = name
         self.description = description
@@ -75,7 +70,7 @@ class Post(db.Model):
     __tablename__ = 'posts'
 
     id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    #user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     content = db.Column(db.String(300))
     media_url = db.Column(db.String(300))
 

@@ -23,16 +23,16 @@
     <nav class="navbar fixed-bottom navbar-light bg-light">
         <ul class="nav nav-pills nav-justified w-100">
             <li class="nav-item">
-                <a class="nav-link active" href="/profile">Profile</a>
+                <a class="nav-link active" href="{{ url_for('main.profile', user_id=session['user_id']) }}">Profile</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="/group">Groups</a>
+                <a class="nav-link" href="{{ url_for('main.group', user_id=session['user_id']) }}">Groups</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="/workout_log">Workout Log</a>
+                <a class="nav-link" href="{{ url_for('main.workout_log', user_id=session['user_id']) }}">Workout Log</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="/login">Login</a>
+                <a class="nav-link" href="{{ url_for('main.login') }}">Login</a>
             </li>
         </ul>
     </nav>

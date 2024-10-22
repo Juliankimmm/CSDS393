@@ -30,22 +30,21 @@
     <nav class="navbar fixed-bottom navbar-light bg-light">
         <ul class="nav nav-pills nav-justified w-100">
             <li class="nav-item">
-                <a class="nav-link" href="/profile">Profile</a>
+                <a class="nav-link" href="{{ url_for('main.profile', user_id=session['user_id']) }}">Profile</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="/group">Groups</a>
+                <a class="nav-link" href="{{ url_for('main.group', user_id=session['user_id']) }}">Groups</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="/workout_log">Workout Log</a>
+                <a class="nav-link" href="{{ url_for('main.workout_log', user_id=session['user_id']) }}">Workout Log</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link active" href="/login">Login</a>
+                <a class="nav-link active" href="{{ url_for('main.login') }}">Login</a>
             </li>
         </ul>
     </nav>
 
-     <!-- Create Account Button -->
-     <div class="modal fade" id="createAccountModal" tabindex="-1" role="dialog" aria-labelledby="createAccountModalLabel" aria-hidden="true">
+    <div class="modal fade" id="createAccountModal" tabindex="-1" role="dialog" aria-labelledby="createAccountModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -55,7 +54,7 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form id="createAccountForm">
+                    <form id="createAccountForm" method="POST" action="/create_account">
                         <div class="form-group">
                             <label for="new-username">Username</label>
                             <input type="text" class="form-control" id="new-username" name="new-username" required>
@@ -63,6 +62,10 @@
                         <div class="form-group">
                             <label for="new-password">Password</label>
                             <input type="password" class="form-control" id="new-password" name="new-password" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="bio">Bio (Optional)</label>
+                            <textarea class="form-control" id="bio" name="bio" rows="3"></textarea>
                         </div>
                     </form>
                 </div>
@@ -73,6 +76,13 @@
             </div>
         </div>
     </div>
+    
+    <script>
+        function submitCreateAccount() {
+            // Submit the create account form via JavaScript
+            document.getElementById("createAccountForm").submit();
+        }
+    </script>
 
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
