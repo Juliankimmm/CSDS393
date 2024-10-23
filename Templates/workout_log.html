@@ -5,6 +5,29 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Workout Log - Collegym</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href='https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.2/fullcalendar.min.css' rel='stylesheet' />
+    <style>
+        .exercise-input {
+            margin-bottom: 15px;
+        }
+        .add-exercise-btn {
+            margin: 20px 0;
+        }
+        .calendar-container {
+            margin: 30px 0;
+        }
+        .exercise-row {
+            display: flex;
+            align-items: center;
+        }
+        .exercise-row input, .exercise-row textarea {
+            margin-right: 10px;
+            flex: 1;
+        }
+        .delete-exercise-btn {
+            margin-left: 10px;
+        }
+    </style>
 </head>
 <body>
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
@@ -12,42 +35,52 @@
     </nav>
     <div class="container mt-5">
         <h2>Workout Log</h2>
-            <form method="POST" action="/workout_log">
-                <input type="hidden" name="user_id" value="{{ user_id }}">
-                <div class="form-group">
-                    <label for="exercises">Exercise</label>
-                    <input type="text" class="form-control" id="exercise" name="exercise" required>
+        
+        <!-- Calendar Section -->
+        <div class="calendar-container">
+            <div id="calendar"></div>
+        </div>
+
+        <form method="POST" action="/workout_log" id="workout-form" style="display: none;">
+            <input type="hidden" name="user_id" value="{{ user_id }}">
+            <input type="hidden" name="workout_date" id="workout-date" value="">
+
+            <!-- Workout Title -->
+            <div class="form-group">
+                <label for="workout-title">Workout Title</label>
+                <input type="text" class="form-control" id="workout-title" name="workout_title" required>
+            </div>
+            
+            <!-- Exercise Inputs -->
+            <div id="exercise-container">
+                <div class="exercise-input exercise-row">
+                    <input type="text" class="form-control" name="exercise[]" placeholder="Exercise" required>
+                    <input type="number" class="form-control" name="weight[]" placeholder="Weight (lbs)" min="0" oninput="validateInput(this)">
+                    <input type="number" class="form-control" name="reps[]" placeholder="Reps" min="0" oninput="validateInput(this)">
+                    <input type="number" class="form-control" name="rpe[]" min="1" max="10" placeholder="RPE" oninput="validateInput(this)">
+                    <textarea class="form-control" name="notes[]" rows="1" placeholder="Notes"></textarea>
                 </div>
-                <div class="form-group">
-                    <label for="reps">Reps</label>
-                    <input type="number" class="form-control" id="reps" name="reps" required>
-                </div>
-                <div class="form-group">
-                    <label for="weight">Weight (lbs)</label>
-                    <input type="number" class="form-control" id="weight" name="weight">
-                </div>
-                <div class="form-group">
-                    <label for="rpe">RPE (Rate of Perceived Exertion)</label>
-                    <input type="number" class="form-control" id="rpe" name="rpe" min="1" max="10" required>
-                </div>
-                <button type="submit" class="btn btn-primary">Log Workout</button>
-            </form>
+            </div>
+
+            <script>
+                function validateInput(input) {
+                    if (input.value < 1) {
+                        input.setCustomValidity('Value must be at least 1');
+                    } else {
+                        input.setCustomValidity('');
+                    }
+                }
+            </script>
+            
+            <button type="button" class="btn btn-secondary add-exercise-btn" id="add-exercise">Add Exercise</button>
+            <button type="submit" class="btn btn-primary btn-block">Log Workout</button>
+        </form>
 
         <hr>
         <h4>Workout Log History</h4>
-        <table class="table table-bordered">
-            <thead>
-                <tr>
-                    <th>Exercise</th>
-                    <th>Reps</th>
-                    <th>Weight</th>
-                    <th>RPE</th>
-                </tr>
-            </thead>
-            <tbody>
-                <!-- Example log entries will be dynamically inserted here -->
-            </tbody>
-        </table>
+        <div id="workout-log-history">
+            <!-- Workout entries will be dynamically inserted here -->
+        </div>
     </div>
 
     <!-- Bottom Navigation Bar -->
@@ -71,5 +104,99 @@
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js'></script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.2/fullcalendar.min.js'></script>
+    
+    <script>
+        $(document).ready(function() {
+            // Initialize the calendar
+            $('#calendar').fullCalendar({
+                header: {
+                    left: 'prev,next today',
+                    center: 'title',
+                    right: 'month,agendaWeek,agendaDay'
+                },
+                selectable: true,
+                select: function(start, end) {
+                    // Get the selected date
+                    var selectedDate = start.format('YYYY-MM-DD');
+                    $('#workout-date').val(selectedDate);  // Store selected date in hidden input
+                    $('#workout-title').val(''); // Clear the workout title field
+                    $('#exercise-container').empty(); // Clear existing exercises
+                    
+                    // Show the form for logging the workout
+                    $('#workout-form').show();
+                    $('#calendar').fullCalendar('unselect'); // Unselect the date
+                }
+            });
+
+            // Add Exercise functionality
+            $('#add-exercise').click(function() {
+                $('#exercise-container').append(`
+                    <div class="exercise-input exercise-row">
+                        <input type="text" class="form-control" name="exercise[]" placeholder="Exercise" required>
+                        <input type="number" class="form-control" name="weight[]" placeholder="Weight (lbs)" required>
+                        <input type="number" class="form-control" name="reps[]" placeholder="Reps" required>
+                        <input type="number" class="form-control" name="rpe[]" min="1" max="10" placeholder="RPE" required>
+                        <textarea class="form-control" name="notes[]" rows="1" placeholder="Notes"></textarea>
+                        <button type="button" class="btn btn-danger delete-exercise-btn">Delete</button>
+                    </div>
+                `);
+            });
+
+            // Delete Exercise Row functionality
+            $(document).on('click', '.delete-exercise-btn', function() {
+                $(this).closest('.exercise-row').remove(); // Remove the exercise row
+            });
+
+            // Simulate the logging of workouts for demo purposes
+            $('#workout-form').submit(function(event) {
+                event.preventDefault();
+                const title = $('#workout-title').val();
+                let exercisesHTML = '';
+                $('#exercise-container .exercise-row').each(function() {
+                    const exercise = $(this).find('input[name="exercise[]"]').val();
+                    const weight = $(this).find('input[name="weight[]"]').val();
+                    const reps = $(this).find('input[name="reps[]"]').val();
+                    const rpe = $(this).find('input[name="rpe[]"]').val();
+                    const notes = $(this).find('textarea[name="notes[]"]').val();
+
+                    exercisesHTML += `
+                        <tr>
+                            <td>${exercise}</td>
+                            <td>${weight}</td>
+                            <td>${reps}</td>
+                            <td>${rpe}</td>
+                            <td>${notes}</td>
+                        </tr>
+                    `;
+                });
+
+                const workoutEntry = `
+                    <div class="workout-entry">
+                        <h5>${title}</h5>
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>Exercise</th>
+                                    <th>Weight (lbs)</th>
+                                    <th>Reps</th>
+                                    <th>RPE</th>
+                                    <th>Notes</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${exercisesHTML}
+                            </tbody>
+                        </table>
+                    </div>
+                `;
+                $('#workout-log-history').append(workoutEntry);
+                $('#workout-form')[0].reset(); // Reset the form after logging
+                $('#exercise-container').empty(); // Clear existing exercises
+                $('#workout-form').hide(); // Hide the form
+            });
+        });
+    </script>
 </body>
 </html>

@@ -5,6 +5,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Collegym</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        /* Dark Mode Styles */
+        body.dark-mode {
+            background-color: #343a40; /* Dark background */
+            color: white; /* Light text */
+        }
+        .dark-mode .navbar {
+            background-color: #495057; /* Dark navbar */
+        }
+        .dark-mode .navbar-light .navbar-nav .nav-link {
+            color: white; /* Light nav links */
+        }
+        .dark-mode .btn-primary {
+            background-color: #007bff; /* Dark mode primary button */
+        }
+    </style>
 </head>
 <body>
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
@@ -13,6 +29,9 @@
             <ul class="navbar-nav ml-auto">
                 <li class="nav-item">
                     <a class="nav-link" href="/login">Login</a>
+                </li>
+                <li class="nav-item">
+                    <button id="darkModeToggle" class="btn btn-outline-secondary ml-2">Toggle Dark Mode</button>
                 </li>
             </ul>
         </div>
@@ -43,5 +62,13 @@
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        // Dark Mode Toggle Script
+        document.getElementById('darkModeToggle').addEventListener('click', function() {
+            document.body.classList.toggle('dark-mode');
+            // Optionally, you can change the button text based on the mode
+            this.textContent = document.body.classList.contains('dark-mode') ? 'Toggle Light Mode' : 'Toggle Dark Mode';
+        });
+    </script>
 </body>
 </html>
