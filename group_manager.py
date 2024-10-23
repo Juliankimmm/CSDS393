@@ -1,5 +1,5 @@
 import qrcode
-from models import db, Group, User, GroupWorkoutLog
+from models import db, Group, User, GroupWorkoutLog, Post
 
 class GroupManager:
     def create_group(self, group_name, group_description):
