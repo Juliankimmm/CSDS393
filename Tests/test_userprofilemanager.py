@@ -1,10 +1,14 @@
 # Test file for the GroupManager class
 # All of the imports here can be changed, I just don't know how things are laid out yet exactly.
 
+import sys
+import os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
 import unittest
 from app import app
 from models import db
-from app.user_profile_manager import UserProfileManager
+from user_profile_manager import UserProfileManager
 
 
 class TestUserSearch(unittest.TestCase):
