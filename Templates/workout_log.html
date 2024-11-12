@@ -8,7 +8,7 @@
     <link href='https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.2/fullcalendar.min.css' rel='stylesheet' />
     <style>
         body {
-            padding-top: 60px; /* Ensures content is not hidden behind navbar */
+            padding-bottom: 60px; /* Ensures content is not hidden behind navbar */
         }
         .exercise-input {
             margin-bottom: 15px;
@@ -36,6 +36,25 @@
     <!-- Navbar -->
     <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
         <a class="navbar-brand" href="#">Collegym</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('main.profile', user_id=session['user_id']) }}">Profile</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('main.group', user_id=session['user_id']) }}">Groups</a>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link" href="{{ url_for('main.workout_log', user_id=session['user_id']) }}">Workout Log</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('main.login') }}">Login</a>
+                </li>
+            </ul>
+        </div>
     </nav>
 
     <div class="container mt-5">
@@ -187,15 +206,13 @@
                                     <th>Notes</th>
                                 </tr>
                             </thead>
-                            <tbody>
-                                ${exercisesHTML}
-                            </tbody>
+                            <tbody>${exercisesHTML}</tbody>
                         </table>
                     </div>
                 `;
-                $('#workout-log-history').append(workoutEntry);
+
+                $('#workout-log-history').prepend(workoutEntry);
                 $('#workout-form')[0].reset();
-                $('#exercise-container').empty();
                 $('#workout-form').hide();
             });
         });

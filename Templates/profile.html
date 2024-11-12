@@ -5,6 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Profile - Collegym</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        /* Add padding to the bottom of the main content to avoid overlap with the fixed navbar */
+        body {
+            padding-bottom: 60px; /* Adjust to match navbar height */
+        }
+    </style>
 </head>
 <body>
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
@@ -13,23 +19,31 @@
     <div class="container mt-5">
         <h2>{{ user.username }}'s Profile</h2>
         <p><strong>Bio:</strong> <span id="bio">{{ user.bio }}</span></p>
-        <p><strong>Personal Records:</strong> {{ user.pr }}</p>
+        <p><strong>Personal Records:</strong> <span id="prs">{{ user.pr }}</span></p>
         <p><strong>Social Media:</strong> <span id="social-media">{{ user.social_media }}</span></p>
-        <a href="/workout_log" class="btn btn-primary">Log a Workout</a>
+        <a href="{{ url_for('main.workout_log', user_id=session['user_id']) }}" class="btn btn-primary">Log a Workout</a>
         <a href="/group" class="btn btn-secondary">Groups</a>
 
-        <h3 class="mt-4">Edit Profile</h3>
-        <form action="{{ url_for('main.profile', user_id=session['user_id']) }}" method="POST">
-            <div class="form-group">
-                <label for="bio-input">Edit Bio:</label>
-                <textarea class="form-control" id="bio-input" name="bio" rows="3" placeholder="Enter your bio">{{ user.bio }}</textarea>
-            </div>
-            <div class="form-group">
-                <label for="social-media-input">Edit Social Media Links:</label>
-                <input type="text" class="form-control" id="social-media-input" name="social_media" placeholder="Enter your social media links" value="{{ user.social_media }}">
-            </div>
-            <button type="submit" class="btn btn-success">Save Changes</button>
-        </form>
+        <button id="edit-profile-btn" class="btn btn-warning mt-4" onclick="toggleEditForm()">Edit Profile</button>
+
+        <!-- Edit Profile Form -->
+        <div id="edit-profile-form" style="display: none;" class="mt-4">
+            <form action="{{ url_for('main.profile', user_id=session['user_id']) }}" method="POST">
+                <div class="form-group">
+                    <label for="bio-input">Edit Bio:</label>
+                    <textarea class="form-control" id="bio-input" name="bio" rows="3">{{ user.bio }}</textarea>
+                </div>
+                <div class="form-group">
+                    <label for="prs-input">Edit Personal Records:</label>
+                    <input type="text" class="form-control" id="prs-input" name="pr" value="{{ user.pr }}">
+                </div>
+                <div class="form-group">
+                    <label for="social-media-input">Edit Social Media Links:</label>
+                    <input type="text" class="form-control" id="social-media-input" name="social_media" value="{{ user.social_media }}">
+                </div>
+                <button type="submit" class="btn btn-success">Save Changes</button>
+            </form>
+        </div>
     </div>
 
     <!-- Bottom Navigation Bar -->
@@ -53,5 +67,12 @@
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    
+    <script>
+        function toggleEditForm() {
+            var form = document.getElementById("edit-profile-form");
+            form.style.display = form.style.display === "none" ? "block" : "none";
+        }
+    </script>
 </body>
 </html>
