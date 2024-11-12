@@ -4,8 +4,8 @@
 import unittest
 from app import app
 from models import db
-from app.group_manager import GroupManager
-from app.user_profile_manager import UserProfileManager
+from group_manager import GroupManager
+from user_profile_manager import UserProfileManager
 
 class TestGroupCreationAndJoining(unittest.TestCase):
 

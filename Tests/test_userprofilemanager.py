@@ -4,7 +4,7 @@
 import unittest
 from app import app
 from models import db
-from app.user_profile_manager import UserProfileManager
+from user_profile_manager import UserProfileManager
 
 
 class TestUserSearch(unittest.TestCase):

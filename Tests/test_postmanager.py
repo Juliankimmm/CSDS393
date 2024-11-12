@@ -4,8 +4,8 @@
 import unittest
 from app import app
 from models import db
-from app.post_manager import PostManager
-from app.user_profile_manager import UserProfileManager
+from post_manager import PostManager
+from user_profile_manager import UserProfileManager
 
 
 class TestMultimediaUpload(unittest.TestCase):
