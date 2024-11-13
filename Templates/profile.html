@@ -21,7 +21,7 @@
         <p><strong>Personal Records:</strong> <span id="prs">{{ user.pr }}</span></p>
         <p><strong>Social Media:</strong> <span id="social-media">{{ user.social_media }}</span></p>
         <a href="{{ url_for('main.workout_log', user_id=session['user_id']) }}" class="btn btn-primary">Log a Workout</a>
-        <a href="/group" class="btn btn-secondary">Groups</a>
+        <a href="{{ url_for('main.group', user_id=session['user_id']) }}" class="btn btn-secondary">Groups</a>
 
         <button id="edit-profile-btn" class="btn btn-warning mt-4" onclick="toggleEditForm()">Edit Profile</button>
         <button id="settings-btn" class="btn btn-info mt-4" onclick="toggleSettingsForm()">Settings</button>
