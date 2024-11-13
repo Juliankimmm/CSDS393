@@ -6,9 +6,8 @@
     <title>Profile - Collegym</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        /* Add padding to the bottom of the main content to avoid overlap with the fixed navbar */
         body {
-            padding-bottom: 60px; /* Adjust to match navbar height */
+            padding-bottom: 60px;
         }
     </style>
 </head>
@@ -25,6 +24,7 @@
         <a href="/group" class="btn btn-secondary">Groups</a>
 
         <button id="edit-profile-btn" class="btn btn-warning mt-4" onclick="toggleEditForm()">Edit Profile</button>
+        <button id="settings-btn" class="btn btn-info mt-4" onclick="toggleSettingsForm()">Settings</button>
 
         <!-- Edit Profile Form -->
         <div id="edit-profile-form" style="display: none;" class="mt-4">
@@ -42,6 +42,28 @@
                     <input type="text" class="form-control" id="social-media-input" name="social_media" value="{{ user.social_media }}">
                 </div>
                 <button type="submit" class="btn btn-success">Save Changes</button>
+            </form>
+        </div>
+
+        <!-- Settings Form -->
+        <div id="settings-form" style="display: none;" class="mt-4">
+            <form action="{{ url_for('main.update_preferences', user_id=session['user_id']) }}" method="POST">
+                <div class="form-group">
+                    <label for="privacy-settings">Privacy Settings:</label>
+                    <select class="form-control" id="privacy-settings" name="privacy_settings">
+                        <option value="public" {{ 'selected' if user.privacy_settings == 'public' else '' }}>Public</option>
+                        <option value="friends-only" {{ 'selected' if user.privacy_settings == 'friends-only' else '' }}>Friends Only</option>
+                        <option value="private" {{ 'selected' if user.privacy_settings == 'private' else '' }}>Private</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="unit-preferences">Unit Preferences:</label>
+                    <select class="form-control" id="unit-preferences" name="unit_preferences">
+                        <option value="imperial" {{ 'selected' if user.unit_preferences == 'imperial' else '' }}>Imperial</option>
+                        <option value="metric" {{ 'selected' if user.unit_preferences == 'metric' else '' }}>Metric</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-success">Save Preferences</button>
             </form>
         </div>
     </div>
@@ -67,10 +89,15 @@
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    
+
     <script>
         function toggleEditForm() {
             var form = document.getElementById("edit-profile-form");
+            form.style.display = form.style.display === "none" ? "block" : "none";
+        }
+
+        function toggleSettingsForm() {
+            var form = document.getElementById("settings-form");
             form.style.display = form.style.display === "none" ? "block" : "none";
         }
     </script>

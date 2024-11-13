@@ -9,6 +9,20 @@ profile_manager = UserProfileManager()
 def index():
     return render_template('index.html')
 
+@main.route('/update_preferences/<int:user_id>', methods=['POST'])
+def update_preferences(user_id):
+    # Fetch privacy and unit preferences from the form
+    privacy_settings = request.form.get('privacy_settings')
+    unit_preferences = request.form.get('unit_preferences')
+    
+    # Update preferences via UserProfileManager
+    profile_manager.set_privacy_settings(user_id, privacy_settings)
+    profile_manager.set_unit_preferences(user_id, unit_preferences)
+    
+    # Show success message and redirect to profile page
+    flash("Preferences updated successfully.")
+    return redirect(url_for('main.profile', user_id=user_id))
+
 @main.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
