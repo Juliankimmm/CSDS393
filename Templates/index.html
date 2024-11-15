@@ -41,6 +41,7 @@
         <p>Your ultimate workout logging and social media app.</p>
     </div>
 
+    {% if session.get('user_id') %}
     <!-- Bottom Navigation Bar -->
     <nav class="navbar fixed-bottom navbar-light bg-light">
         <ul class="nav nav-pills nav-justified w-100">
@@ -58,6 +59,7 @@
             </li>
         </ul>
     </nav>
+    {% endif %}
 
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
