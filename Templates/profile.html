@@ -14,6 +14,31 @@
 <body>
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <a class="navbar-brand" href="#">Collegym</a>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <button class="btn btn-outline-primary" id="searchButton">Search</button>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Implementing the search feature, functionality performed through routes.py, and the script at the bottom of this file -->
+        <div class="modal" tabindex="-1" role="dialog" id="searchModal">
+            <div class="modal-dialog" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title">Search for a Username</h5>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close" id="closeModalButton">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <div class="modal-body">
+                  <input type="text" class="form-control" id="searchInput" placeholder="Enter username..." oninput="searchUsers()">
+                  <div id="searchResults" class="mt-2"></div> <!-- Display search results here -->
+                </div>
+              </div>
+            </div>
+          </div>
     </nav>
     <div class="container mt-5">
         <h2>{{ user.username }}'s Profile</h2>
@@ -100,6 +125,51 @@
             var form = document.getElementById("settings-form");
             form.style.display = form.style.display === "none" ? "block" : "none";
         }
+
+        document.getElementById('searchButton').addEventListener('click', function() {
+        $('#searchModal').modal('show'); // Show the modal
+    });
+
+
+    /*
+    The following JS is for the search button, based in the top-right.
+    */
+    document.getElementById('closeModalButton').addEventListener('click', function() {
+        $('#searchModal').modal('hide');
+    });
+
+    function searchUsers() {
+        const searchInput = document.getElementById('searchInput').value.toLowerCase();
+        const searchResultsDiv = document.getElementById('searchResults');
+        searchResultsDiv.innerHTML = '';
+
+        if (searchInput === '') {
+            return;
+        }
+
+        // Make an AJAX request to the Flask server
+        fetch(`/search?query=${searchInput}`)
+            .then(response => response.json())
+            .then(usernames => {
+                if (usernames.length === 0) {
+                    const noResultsMessage = document.createElement('div');
+                    noResultsMessage.classList.add('no-results');
+                    noResultsMessage.textContent = 'No results found';
+                    searchResultsDiv.appendChild(noResultsMessage);
+                    return;
+                }
+
+                usernames.forEach(username => {
+                    const userRow = document.createElement('div');
+                    userRow.classList.add('search-result-row');
+                    userRow.textContent = username;
+                    searchResultsDiv.appendChild(userRow);
+                });
+            })
+            .catch(error => {
+                console.error('Error fetching search results:', error);
+            });
+    }
     </script>
 </body>
 </html>
