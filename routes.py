@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, redirect, url_for, flash, session
+from flask import Blueprint, render_template, request, redirect, url_for, flash, session, jsonify
 from models import db, User, WorkoutLog, Group, Post
 from user_profile_manager import UserProfileManager
 
@@ -86,3 +86,12 @@ def group(user_id):
         return redirect(url_for('main.group', user_id=user_id))
     groups = Group.query.all()
     return render_template('group.html', groups=groups)
+
+@main.route('/search', methods=['GET'])
+def search_users():
+    search_query = request.args.get('query', '')
+    if search_query:
+        results = User.query.filter(User.username.ilike(f'%{search_query}%')).all()
+        usernames = [user.username for user in results]
+        return jsonify(usernames)
+    return jsonify([])
