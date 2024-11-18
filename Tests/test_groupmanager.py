@@ -1,22 +1,27 @@
 # Test file for the GroupManager class
 # All of the imports here can be changed, I just don't know how things are laid out yet exactly.
 
-import sys
 import os
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+import sys
+
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
 import unittest
+
 from app import app
-from models import db
 from group_manager import GroupManager
+from models import db
 from user_profile_manager import UserProfileManager
+
 
 class TestGroupCreationAndJoining(unittest.TestCase):
 
     def setUp(self):
         # Setup for Flask app and test database
-        app.config['TESTING'] = True
-        app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///test.db'  # Using a test database
+        app.config["TESTING"] = True
+        app.config["SQLALCHEMY_DATABASE_URI"] = (
+            "sqlite:///test.db"  # Using a test database
+        )
         self.app = app.test_client()
 
         with app.app_context():
@@ -54,5 +59,5 @@ class TestGroupCreationAndJoining(unittest.TestCase):
             self.group_manager.join_group(self.user2.username, "fake-group-id")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

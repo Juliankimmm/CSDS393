@@ -1,7 +1,8 @@
-from flask_sqlalchemy import SQLAlchemy
 from flask import Flask
+from flask_sqlalchemy import SQLAlchemy
 
 db = SQLAlchemy()
+
 
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -11,18 +12,19 @@ class User(db.Model):
     pr = db.Column(db.String(150))
     social_media = db.Column(db.String(300))
 
+
 class WorkoutLog(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
-    exercise = db.Column(db.String(100))  
-    reps = db.Column(db.Integer)          
-    weight = db.Column(db.Float)          
-    rpe = db.Column(db.Float)          
+    user_id = db.Column(db.Integer, db.ForeignKey("user.id"))
+    exercise = db.Column(db.String(100))
+    reps = db.Column(db.Integer)
+    weight = db.Column(db.Float)
+    rpe = db.Column(db.Float)
     notes = db.Column(db.String(255))
 
 
 class Group(db.Model):
-    __tablename__ = 'group'
+    __tablename__ = "group"
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(150), unique=True, nullable=False)
@@ -43,7 +45,7 @@ class Group(db.Model):
         return self.privacy_settings
 
     def get_group_members(self):
-        return self.members.all() 
+        return self.members.all()
 
     def get_member_requests(self):
         return self.member_requests
@@ -59,24 +61,24 @@ class Group(db.Model):
         self.privacy_settings = privacy_settings
 
     def set_group_members(self, members):
-        self.members = members 
+        self.members = members
 
     def set_member_requests(self, member_requests):
-        self.member_requests = member_requests 
+        self.member_requests = member_requests
 
 
 class Post(db.Model):
 
-    __tablename__ = 'posts'
+    __tablename__ = "posts"
 
     id = db.Column(db.Integer, primary_key=True)
-    #user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    # user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     content = db.Column(db.String(300))
     media_url = db.Column(db.String(300))
 
     def __init__(self, user_id, content="", media_url=""):
         self.user_id = user_id
-        self.content = content 
+        self.content = content
         self.media_url = media_url
 
     # Getter methods
@@ -91,7 +93,7 @@ class Post(db.Model):
 
     def get_media_url(self):
         return self.media_url
-    
+
     # Setter methods
     def set_content(self, content):
         self.content = content
@@ -99,13 +101,15 @@ class Post(db.Model):
     def set_media_url(self, media_url):
         self.media_url = media_url
 
+
 class GroupMembers(db.Model):
-    __tablename__ = 'group_members'
-    group_id = db.Column(db.Integer, db.ForeignKey('group.id'), primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key=True)
+    __tablename__ = "group_members"
+    group_id = db.Column(db.Integer, db.ForeignKey("group.id"), primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey("user.id"), primary_key=True)
+
 
 class Exercise(db.Model):
-    __tablename__ = 'exercise'
+    __tablename__ = "exercise"
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), unique=True, nullable=False)
@@ -114,13 +118,14 @@ class Exercise(db.Model):
     rpe = db.Column(db.Float)
 
     # Optionally add relationship with Set (if you have sets for exercises)
-    sets = db.relationship('Set', backref='exercise', lazy=True)
+    sets = db.relationship("Set", backref="exercise", lazy=True)
+
 
 class Set(db.Model):
-    __tablename__ = 'set'
+    __tablename__ = "set"
 
     id = db.Column(db.Integer, primary_key=True)
-    exercise_id = db.Column(db.Integer, db.ForeignKey('exercise.id'))
+    exercise_id = db.Column(db.Integer, db.ForeignKey("exercise.id"))
     weight = db.Column(db.Float)
     reps = db.Column(db.Integer)
     rpe = db.Column(db.Float)

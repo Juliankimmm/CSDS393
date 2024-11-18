@@ -1,15 +1,16 @@
 import unittest
+
 from app import app
-from models import db
 from exercise import Exercise
+from models import db
 
 
 class TestExercise(unittest.TestCase):
 
     def setUp(self):
         # Set up the Flask app and test database
-        app.config['TESTING'] = True
-        app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///test.db'
+        app.config["TESTING"] = True
+        app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///test.db"
         self.app = app.test_client()
 
         with app.app_context():
@@ -35,5 +36,5 @@ class TestExercise(unittest.TestCase):
             self.exercise.weight = "invalid_weight"  # Assuming weight should be numeric
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

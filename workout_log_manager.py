@@ -1,7 +1,10 @@
-from models import db, WorkoutLog, User, Exercise, Set
 from flask_sqlalchemy import SQLAlchemy
 
+from models import Exercise, Set, User, WorkoutLog, db
+
 db = SQLAlchemy()
+
+
 class WorkoutLogManager:
     def __init__(self):
         self.logs = []
@@ -21,7 +24,9 @@ class WorkoutLogManager:
 
     def CreateWorkoutLog(self, userID):
         # Generate a new log and add to database
-        new_log = WorkoutLog(user_id=userID)  # Assuming userID is passed and linked to the log
+        new_log = WorkoutLog(
+            user_id=userID
+        )  # Assuming userID is passed and linked to the log
         db.session.add(new_log)
         db.session.commit()
         return new_log.id
@@ -45,7 +50,9 @@ class WorkoutLogManager:
         # Remove log from users' post history
         users = User.query.all()
         for user in users:
-            user.post_history = [log_id for log_id in user.post_history if log_id != logID]
+            user.post_history = [
+                log_id for log_id in user.post_history if log_id != logID
+            ]
         db.session.commit()
 
     def CompleteWorkoutLog(self, logID):
@@ -58,18 +65,23 @@ class WorkoutLogManager:
                 user.workout_history.append(logID)
             db.session.commit()
 
+
 class WorkoutLog(db.Model):
-    __tablename__ = 'workout_log'
+    __tablename__ = "workout_log"
 
     logID = db.Column(db.Integer, primary_key=True)  # logID as primary key
     name = db.Column(db.String(255))
     notes = db.Column(db.String(255))
-    userID = db.Column(db.Integer, db.ForeignKey('user.id'))  # Assuming you have a user model
+    userID = db.Column(
+        db.Integer, db.ForeignKey("user.id")
+    )  # Assuming you have a user model
     complete = db.Column(db.Boolean, default=False)
     editing = db.Column(db.Boolean, default=False)
 
     # Define a relationship to Exercise, assuming you have an Exercise model
-    exercises = db.relationship('Exercise', secondary='workout_log_exercise', backref='workout_logs')
+    exercises = db.relationship(
+        "Exercise", secondary="workout_log_exercise", backref="workout_logs"
+    )
 
     def __init__(self, name, notes, userID):
         self.name = name
@@ -78,7 +90,9 @@ class WorkoutLog(db.Model):
 
     # Add exercise to the workout log
     def add_exercise(self, exerciseID):
-        exercise = Exercise.query.get(exerciseID)  # Fetch the Exercise from the database
+        exercise = Exercise.query.get(
+            exerciseID
+        )  # Fetch the Exercise from the database
         if exercise:
             self.exercises.append(exercise)
             db.session.commit()
