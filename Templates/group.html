@@ -12,7 +12,7 @@
     </nav>
     <div class="container mt-5">
         <h2>Groups</h2>
-        <form method="POST" action="/group">
+        <form method="POST" action="{{ url_for('main.group', user_id=session['user_id']) }}">
             <div class="form-group">
                 <label for="name">Group Name</label>
                 <input type="text" class="form-control" id="name" name="name" required>
@@ -23,6 +23,16 @@
             </div>
             <button type="submit" class="btn btn-primary">Create Group</button>
         </form>
+
+        {% if invite_link and qr_code_url %}
+        <div class="mt-4">
+            <h4>Invite Link</h4>
+            <p><a href="{{ invite_link }}" target="_blank">{{ invite_link }}</a></p>
+            <h4>QR Code</h4>
+            <img src="{{ url_for('static', filename=qr_code_url) }}" alt="QR Code">
+        </div>
+        {% endif %}
+
         <hr>
         <h3>Available Groups</h3>
         <ul class="list-group">

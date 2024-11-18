@@ -170,6 +170,51 @@
             var form = document.getElementById("settings-form");
             form.style.display = form.style.display === "none" ? "block" : "none";
         }
+
+        document.getElementById('searchButton').addEventListener('click', function() {
+        $('#searchModal').modal('show'); // Show the modal
+    });
+
+
+    /*
+    The following JS is for the search button, based in the top-right.
+    */
+    document.getElementById('closeModalButton').addEventListener('click', function() {
+        $('#searchModal').modal('hide');
+    });
+
+    function searchUsers() {
+        const searchInput = document.getElementById('searchInput').value.toLowerCase();
+        const searchResultsDiv = document.getElementById('searchResults');
+        searchResultsDiv.innerHTML = '';
+
+        if (searchInput === '') {
+            return;
+        }
+
+        // Make an AJAX request to the Flask server
+        fetch(`/search?query=${searchInput}`)
+            .then(response => response.json())
+            .then(usernames => {
+                if (usernames.length === 0) {
+                    const noResultsMessage = document.createElement('div');
+                    noResultsMessage.classList.add('no-results');
+                    noResultsMessage.textContent = 'No results found';
+                    searchResultsDiv.appendChild(noResultsMessage);
+                    return;
+                }
+
+                usernames.forEach(username => {
+                    const userRow = document.createElement('div');
+                    userRow.classList.add('search-result-row');
+                    userRow.textContent = username;
+                    searchResultsDiv.appendChild(userRow);
+                });
+            })
+            .catch(error => {
+                console.error('Error fetching search results:', error);
+            });
+    }
     </script>
 </body>
 </html>

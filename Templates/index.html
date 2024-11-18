@@ -41,6 +41,7 @@
         <p>Your ultimate workout logging and social media app.</p>
     </div>
 
+    {% if session.get('user_id') %}
     <!-- Bottom Navigation Bar -->
     <nav class="navbar fixed-bottom navbar-light bg-light">
         <ul class="nav nav-pills nav-justified w-100">
@@ -58,21 +59,19 @@
             </li>
         </ul>
     </nav>
+    {% endif %}
 
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script>
-        // Simulated login status (set to false initially)
         let isLoggedIn = false;
 
-        // Dark Mode Toggle Script
         document.getElementById('darkModeToggle').addEventListener('click', function() {
             document.body.classList.toggle('dark-mode');
             this.textContent = document.body.classList.contains('dark-mode') ? 'Toggle Light Mode' : 'Toggle Dark Mode';
         });
 
-        // Check login status before accessing restricted links
         function checkLogin(event) {
             if (!isLoggedIn) {
                 event.preventDefault();
