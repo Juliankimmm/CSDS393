@@ -94,7 +94,7 @@ class GroupManager:
         if not group:
             raise ValueError("Group not found")
         return [User.query.get(member_id).username for member_id in group.members]
-
+"""
     def start_group_workout(self):
         workout_log = GroupWorkoutLog()
         db.session.add(workout_log)
@@ -133,3 +133,4 @@ class GroupManager:
             raise ValueError("Log not found")
         db.session.delete(log)
         db.session.commit()
+        """
