@@ -91,7 +91,39 @@
                 <button type="submit" class="btn btn-success">Save Preferences</button>
             </form>
         </div>
+         <!-- Button for Uploading a Post -->
+         <a href="#" class="btn btn-primary" data-toggle="modal" data-target="#postUploadModal">Upload a Post</a>
+
+            <!-- Modal for Uploading a Post -->
+            <div class="modal" id="postUploadModal" tabindex="-1" role="dialog">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Upload a New Post</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form action="{{ url_for('main.profile', user_id=user.id) }}" method="POST" enctype="multipart/form-data">
+                    <div class="form-group">
+                        <label for="file-input">Choose Media:</label>
+                        <input type="file" class="form-control" id="file-input" name="media_file" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="caption-input">Caption:</label>
+                        <textarea class="form-control" id="caption-input" name="caption" rows="3" required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-success">Upload Post</button>
+                    </form>
+                </div>
+                </div>
+            </div>
+        </div>
     </div>
+
+
+   
 
     <!-- Bottom Navigation Bar -->
     <nav class="navbar fixed-bottom navbar-light bg-light">
