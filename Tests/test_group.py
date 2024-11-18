@@ -1,5 +1,9 @@
 import unittest
-from Collegym.app import app
+import sys
+import os
+
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+from app import app
 from group_manager import GroupManager
 from models import db
 from user_profile_manager import UserProfileManager

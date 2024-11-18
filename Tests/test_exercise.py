@@ -1,6 +1,9 @@
 import unittest
+import sys
+import os
 
-from Collegym.app import app
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+from app import app
 from exercise import Exercise
 from models import db
 
