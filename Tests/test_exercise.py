@@ -16,7 +16,7 @@ class TestExercise(unittest.TestCase):
             db.create_all()
 
         # Initialize an exercise for testing
-        self.exercise = Exercise("Push-Up", reps=10, sets=3, weight=0)
+        self.exercise = Exercise("Push-Up", exerciseSets=3, exerciseWeights=0)
 
     def tearDown(self):
         # Clean up the database after each test
@@ -26,13 +26,13 @@ class TestExercise(unittest.TestCase):
 
     def test_set_reps(self):
         # Test setting reps
-        self.exercise.reps = 15
-        self.assertEqual(self.exercise.reps, 15)
+        self.exercise.exerciseSets = 15
+        self.assertEqual(self.exercise.exerciseSets, 15)
 
     def test_set_invalid_weight(self):
         # Test setting an invalid weight
         with self.assertRaises(ValueError):
-            self.exercise.weight = "invalid_weight"  # Assuming weight should be numeric
+            self.exercise.exerciseWeights = "invalid_weight"  # Assuming weight should be numeric
 
 
 if __name__ == '__main__':

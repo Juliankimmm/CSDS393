@@ -17,10 +17,12 @@ class TestGroupCreationAndJoining(unittest.TestCase):
         # Setup for Flask app and test database
         app.config['TESTING'] = True
         app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///test.db'  # Using a test database
+         # Push the application context
+        self.app_context = app.app_context()
+        self.app_context.push()
+        
+        db.create_all()  # Create tables within this application context
         self.app = app.test_client()
-
-        with app.app_context():
-            db.create_all()  # Create all tables for test
 
         # Initialize managers and create test users
         self.group_manager = GroupManager()
