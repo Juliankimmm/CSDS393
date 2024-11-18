@@ -24,11 +24,7 @@ Once the `"Create Group" button is clicked on the group workout page, it should 
 If applicable, add screenshots to help explain your problem.
 
 ---
-name: Bug
-about: post upload
-title: ''
-labels: ''
-assignees: ''
+Bug: Error Uploading Posts
 ---
 
 **Describe the bug**
