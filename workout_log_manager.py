@@ -1,3 +1,4 @@
+from models import db, User
 class WorkoutLogManager:
     def __init__(self):
         self.logs = []
