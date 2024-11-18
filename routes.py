@@ -52,8 +52,10 @@ def profile(user_id):
         flash('You need to log in first', 'warning')
         return redirect(url_for('main.login'))
     user = User.query.get_or_404(user_id)
+    #posts = Post.query.filter_by(user_id=user_id).all()
     workout_logs = WorkoutLog.query.filter_by(user_id=user_id).all()
-    return render_template('profile.html', user=user, workout_logs=workout_logs)
+    #return render_template('profile.html', user=user, posts=posts, workout_logs=workout_logs)
+    return render_template("profile.html", user=user)
 
 @main.route('/workout_log/<int:user_id>', methods=['GET', 'POST'])
 def workout_log(user_id):

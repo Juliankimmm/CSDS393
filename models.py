@@ -10,6 +10,8 @@ class User(db.Model):
     bio = db.Column(db.String(300))
     pr = db.Column(db.String(150))
     social_media = db.Column(db.String(300))
+    #posts = db.relationship('Post', back_populates='user', cascade='all, delete-orphan')  # Ensure this is here
+
 
 class WorkoutLog(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -70,14 +72,17 @@ class Post(db.Model):
     __tablename__ = 'posts'
 
     id = db.Column(db.Integer, primary_key=True)
-    #user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
-    content = db.Column(db.String(300))
-    media_url = db.Column(db.String(300))
+    #user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    content = db.Column(db.Text, nullable=False)
+    media_url = db.Column(db.String, nullable=True)
+
+    #user = db.relationship('User', back_populates='posts')
 
     def __init__(self, user_id, content="", media_url=""):
         self.user_id = user_id
         self.content = content 
         self.media_url = media_url
+        
 
     # Getter methods
     def get_id(self):
