@@ -98,10 +98,29 @@ class Post(db.Model):
 
     def set_media_url(self, media_url):
         self.media_url = media_url
-    
-
 
 class GroupMembers(db.Model):
     __tablename__ = 'group_members'
     group_id = db.Column(db.Integer, db.ForeignKey('group.id'), primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key=True)
+
+class Exercise(db.Model):
+    __tablename__ = 'exercise'
+
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), unique=True, nullable=False)
+    details = db.Column(db.String(255))  # Add more fields as necessary
+    weight = db.Column(db.Float)
+    rpe = db.Column(db.Float)
+
+    # Optionally add relationship with Set (if you have sets for exercises)
+    sets = db.relationship('Set', backref='exercise', lazy=True)
+
+class Set(db.Model):
+    __tablename__ = 'set'
+
+    id = db.Column(db.Integer, primary_key=True)
+    exercise_id = db.Column(db.Integer, db.ForeignKey('exercise.id'))
+    weight = db.Column(db.Float)
+    reps = db.Column(db.Integer)
+    rpe = db.Column(db.Float)
