@@ -8,8 +8,10 @@ from routes import main
 app = Flask(__name__)
 
 # Set configurations
-app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv("DATABASE_URI", "sqlite:///test.db")
-app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False  # Disable modification tracking
+app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv(
+    "DATABASE_URI", "sqlite:///test.db")
+# Disable modification tracking
+app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.config["SECRET_KEY"] = os.getenv("SECRET_KEY", "your_secret_key")
 
 # Initialize database

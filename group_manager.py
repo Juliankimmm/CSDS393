@@ -24,7 +24,8 @@ class GroupManager:
         img = qr.make_image(fill="black", back_color="white")
 
         # Ensure the 'static/qr_codes' directory exists
-        qr_codes_dir = os.path.join(current_app.root_path, "static", "qr_codes")
+        qr_codes_dir = os.path.join(
+            current_app.root_path, "static", "qr_codes")
         os.makedirs(qr_codes_dir, exist_ok=True)
 
         qr_code_filename = f"group_{group_id}_invite.png"

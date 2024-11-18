@@ -5,6 +5,7 @@ from models import db
 from post_manager import PostManager
 from user_profile_manager import UserProfileManager
 
+
 class TestMultimediaUpload(unittest.TestCase):
 
     def setUp(self):
@@ -19,7 +20,8 @@ class TestMultimediaUpload(unittest.TestCase):
         # Initialize managers and create a test user
         self.post_manager = PostManager()
         self.user_manager = UserProfileManager()
-        self.user = self.user_manager.create_user_profile("testuser", "password", "bio")
+        self.user = self.user_manager.create_user_profile(
+            "testuser", "password", "bio")
 
     def tearDown(self):
         # Clean up the database after each test
@@ -44,6 +46,7 @@ class TestMultimediaUpload(unittest.TestCase):
             self.post_manager.create_post(
                 self.user.username, invalid_data, caption="Invalid File"
             )
+
 
 if __name__ == "__main__":
     unittest.main()

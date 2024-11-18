@@ -1,5 +1,6 @@
 from models import Post, User, db
 
+
 class PostManager:
     def create_post(self, username, media_url, caption):
         user = User.query.filter_by(username=username).first()

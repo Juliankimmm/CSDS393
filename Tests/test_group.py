@@ -22,7 +22,8 @@ class TestGroup(unittest.TestCase):
         self.owner = self.user_manager.create_user_profile(
             "owner", "password", "Group Owner"
         )
-        self.group = self.group_manager.create_group(self.owner.username, "Test Group")
+        self.group = self.group_manager.create_group(
+            self.owner.username, "Test Group")
 
     def tearDown(self):
         # Clean up the database after each test
@@ -35,7 +36,8 @@ class TestGroup(unittest.TestCase):
         new_member = self.user_manager.create_user_profile(
             "newMember", "password", "bio"
         )
-        result = self.group_manager.add_member(self.group.id, new_member.username)
+        result = self.group_manager.add_member(
+            self.group.id, new_member.username)
         self.assertTrue(result)
         self.assertIn(new_member.username, self.group.members)
 

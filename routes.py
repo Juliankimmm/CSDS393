@@ -12,6 +12,7 @@ profile_manager = UserProfileManager()
 def index():
     return render_template("index.html")
 
+
 @main.route("/update_preferences/<int:user_id>", methods=["POST"])
 def update_preferences(user_id):
     privacy_settings = request.form.get("privacy_settings")
@@ -20,6 +21,7 @@ def update_preferences(user_id):
     profile_manager.set_unit_preferences(user_id, unit_preferences)
     flash("Preferences updated successfully.")
     return redirect(url_for("main.profile", user_id=user_id))
+
 
 @main.route("/login", methods=["GET", "POST"])
 def login():
@@ -35,6 +37,7 @@ def login():
             flash("Invalid credentials")
     return render_template("login.html")
 
+
 @main.route("/create_account", methods=["POST"])
 def create_account():
     username = request.form["new-username"]
@@ -49,6 +52,7 @@ def create_account():
     flash("Account created successfully!", "success")
     return redirect(url_for("main.profile", user_id=new_user.id))
 
+
 @main.route("/profile/<int:user_id>")
 def profile(user_id):
     if "user_id" not in session or session["user_id"] != user_id:
@@ -57,6 +61,7 @@ def profile(user_id):
     user = User.query.get_or_404(user_id)
     workout_logs = WorkoutLog.query.filter_by(user_id=user_id).all()
     return render_template("profile.html", user=user, workout_logs=workout_logs)
+
 
 @main.route("/workout_log/<int:user_id>", methods=["GET", "POST"])
 def workout_log(user_id):
@@ -77,6 +82,7 @@ def workout_log(user_id):
         return redirect(url_for("main.workout_log", user_id=user_id))
     return render_template("workout_log.html")
 
+
 @main.route("/group/<int:user_id>", methods=["GET", "POST"])
 def group(user_id):
     if "user_id" not in session or session["user_id"] != user_id:
@@ -92,11 +98,13 @@ def group(user_id):
     groups = Group.query.all()
     return render_template("group.html", groups=groups)
 
+
 @main.route("/search", methods=["GET"])
 def search_users():
     search_query = request.args.get("query", "")
     if search_query:
-        results = User.query.filter(User.username.ilike(f"%{search_query}%")).all()
+        results = User.query.filter(
+            User.username.ilike(f"%{search_query}%")).all()
         usernames = [user.username for user in results]
         return jsonify(usernames)
     return jsonify([])

@@ -8,6 +8,7 @@ from user_profile_manager import UserProfileManager
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
+
 class TestUserSearch(unittest.TestCase):
 
     def setUp(self):
@@ -21,8 +22,10 @@ class TestUserSearch(unittest.TestCase):
 
         # Initialize the user manager and create test users
         self.user_manager = UserProfileManager()
-        self.user1 = self.user_manager.create_user_profile("user1", "password1", "Bio1")
-        self.user2 = self.user_manager.create_user_profile("user2", "password2", "Bio2")
+        self.user1 = self.user_manager.create_user_profile(
+            "user1", "password1", "Bio1")
+        self.user2 = self.user_manager.create_user_profile(
+            "user2", "password2", "Bio2")
 
     def tearDown(self):
         # Clean up the database after each test
@@ -47,6 +50,7 @@ class TestUserSearch(unittest.TestCase):
         # Test search for a user that does not exist
         result = self.user_manager.search_user("user3")
         self.assertIsNone(result)
+
 
 if __name__ == "__main__":
     unittest.main()

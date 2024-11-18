@@ -8,6 +8,7 @@ from user_profile_manager import UserProfileManager
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
+
 class TestGroupCreationAndJoining(unittest.TestCase):
 
     def setUp(self):
@@ -24,8 +25,10 @@ class TestGroupCreationAndJoining(unittest.TestCase):
         # Initialize managers and create test users
         self.group_manager = GroupManager()
         self.user_manager = UserProfileManager()
-        self.user1 = self.user_manager.create_user_profile("user1", "password1", "bio1")
-        self.user2 = self.user_manager.create_user_profile("user2", "password2", "bio2")
+        self.user1 = self.user_manager.create_user_profile(
+            "user1", "password1", "bio1")
+        self.user2 = self.user_manager.create_user_profile(
+            "user2", "password2", "bio2")
 
     def tearDown(self):
         # Clean up database after each test
@@ -43,7 +46,8 @@ class TestGroupCreationAndJoining(unittest.TestCase):
     def test_join_group(self):
         # Test joining a group
         group = self.group_manager.create_group(self.user1.username, "Group 1")
-        result = self.group_manager.join_group(self.user2.username, group.group_id)
+        result = self.group_manager.join_group(
+            self.user2.username, group.group_id)
         self.assertTrue(result)
         self.assertIn(self.user2.username, group.members)
 
@@ -51,6 +55,7 @@ class TestGroupCreationAndJoining(unittest.TestCase):
         # Testing trying to join a group that doesn't exist
         with self.assertRaises(ValueError):
             self.group_manager.join_group(self.user2.username, "fake-group-id")
+
 
 if __name__ == "__main__":
     unittest.main()

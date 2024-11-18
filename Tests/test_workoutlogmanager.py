@@ -5,6 +5,7 @@ from models import db
 from user_profile_manager import UserProfileManager
 from workout_log_manager import WorkoutLogManager
 
+
 class TestWorkoutLogManager(unittest.TestCase):
 
     def setUp(self):
@@ -45,6 +46,7 @@ class TestWorkoutLogManager(unittest.TestCase):
         )
         result = self.workout_log_manager.delete_workout_log(workout_log.id)
         self.assertTrue(result)
+
 
 if __name__ == "__main__":
     unittest.main()

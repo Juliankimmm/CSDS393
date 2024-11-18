@@ -104,7 +104,8 @@ class Post(db.Model):
 
 class GroupMembers(db.Model):
     __tablename__ = "group_members"
-    group_id = db.Column(db.Integer, db.ForeignKey("group.id"), primary_key=True)
+    group_id = db.Column(db.Integer, db.ForeignKey(
+        "group.id"), primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"), primary_key=True)
 
 

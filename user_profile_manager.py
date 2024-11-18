@@ -1,5 +1,6 @@
 from models import User, db
 
+
 class UserProfileManager:
     # Creating a user profile
     def create_user_profile(self, username, password, bio):
@@ -45,7 +46,8 @@ class UserProfileManager:
         user = User.query.get(user_id)
         requested_user = User.query.get(requested_id)
         if user and requested_user:
-            requested_user.pending_requests.append(user)  # Add to pending requests
+            requested_user.pending_requests.append(
+                user)  # Add to pending requests
             db.session.commit()
             return True
         return False
