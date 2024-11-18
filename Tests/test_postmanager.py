@@ -1,13 +1,9 @@
-# Test file for the PostManager class
-# All of the imports here can be changed, I just don't know how things are laid out yet exactly.
-
 import unittest
 
 from app import app
 from models import db
 from post_manager import PostManager
 from user_profile_manager import UserProfileManager
-
 
 class TestMultimediaUpload(unittest.TestCase):
 
@@ -48,7 +44,6 @@ class TestMultimediaUpload(unittest.TestCase):
             self.post_manager.create_post(
                 self.user.username, invalid_data, caption="Invalid File"
             )
-
 
 if __name__ == "__main__":
     unittest.main()

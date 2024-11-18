@@ -1,6 +1,5 @@
 from models import User, db
 
-
 class UserProfileManager:
     # Creating a user profile
     def create_user_profile(self, username, password, bio):

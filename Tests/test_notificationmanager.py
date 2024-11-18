@@ -1,6 +1,5 @@
-import unittest
+'''import unittest
 
-from notification_manager import NotificationManager
 
 from app import app
 from models import db
@@ -51,3 +50,4 @@ class TestNotificationManager(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+'''

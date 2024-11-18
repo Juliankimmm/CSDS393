@@ -1,5 +1,4 @@
 import unittest
-
 from app import app
 from group_manager import GroupManager
 from models import db

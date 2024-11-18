@@ -1,17 +1,12 @@
-# Test file for the GroupManager class
-# All of the imports here can be changed, I just don't know how things are laid out yet exactly.
-
 import os
 import sys
-
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
-
 import unittest
 
 from app import app
 from models import db
 from user_profile_manager import UserProfileManager
 
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
 class TestUserSearch(unittest.TestCase):
 
@@ -52,7 +47,6 @@ class TestUserSearch(unittest.TestCase):
         # Test search for a user that does not exist
         result = self.user_manager.search_user("user3")
         self.assertIsNone(result)
-
 
 if __name__ == "__main__":
     unittest.main()

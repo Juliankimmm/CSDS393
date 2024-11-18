@@ -35,6 +35,5 @@ class TestExercise(unittest.TestCase):
         with self.assertRaises(ValueError):
             self.exercise.weight = "invalid_weight"  # Assuming weight should be numeric
 
-
 if __name__ == "__main__":
     unittest.main()

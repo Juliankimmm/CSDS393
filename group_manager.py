@@ -1,8 +1,6 @@
 import os
-
 import qrcode
 from flask import current_app
-
 from models import Group, User, db
 
 

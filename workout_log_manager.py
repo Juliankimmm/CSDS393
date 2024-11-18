@@ -1,9 +1,7 @@
 from flask_sqlalchemy import SQLAlchemy
-
 from models import Exercise, Set, User, WorkoutLog, db
 
 db = SQLAlchemy()
-
 
 class WorkoutLogManager:
     def __init__(self):

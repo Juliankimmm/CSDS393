@@ -1,18 +1,12 @@
-# Test file for the GroupManager class
-# All of the imports here can be changed, I just don't know how things are laid out yet exactly.
-
 import os
 import sys
-
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
-
 import unittest
-
 from app import app
 from group_manager import GroupManager
 from models import db
 from user_profile_manager import UserProfileManager
 
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
 class TestGroupCreationAndJoining(unittest.TestCase):
 
@@ -57,7 +51,6 @@ class TestGroupCreationAndJoining(unittest.TestCase):
         # Testing trying to join a group that doesn't exist
         with self.assertRaises(ValueError):
             self.group_manager.join_group(self.user2.username, "fake-group-id")
-
 
 if __name__ == "__main__":
     unittest.main()
