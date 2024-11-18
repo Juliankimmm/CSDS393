@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Profile - Collegym</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         body {
             padding-bottom: 60px;
@@ -14,6 +15,33 @@
 <body>
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <a class="navbar-brand" href="#">Collegym</a>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <button class="btn btn-outline-primary" id="searchButton">
+                        <i class="fas fa-search"></i> Search
+                    </button>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Implementing the search feature, functionality performed through routes.py, and the script at the bottom of this file -->
+        <div class="modal" tabindex="-1" role="dialog" id="searchModal">
+            <div class="modal-dialog" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title">Search for a Username</h5>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close" id="closeModalButton">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <div class="modal-body">
+                  <input type="text" class="form-control" id="searchInput" placeholder="Enter username..." oninput="searchUsers()">
+                  <div id="searchResults" class="mt-2"></div> <!-- Display search results here -->
+                </div>
+              </div>
+            </div>
+          </div>
     </nav>
     <div class="container mt-5">
         <h2>{{ user.username }}'s Profile</h2>
@@ -23,8 +51,8 @@
         <a href="{{ url_for('main.workout_log', user_id=session['user_id']) }}" class="btn btn-primary">Log a Workout</a>
         <a href="{{ url_for('main.group', user_id=session['user_id']) }}" class="btn btn-secondary">Groups</a>
 
-        <button id="edit-profile-btn" class="btn btn-warning mt-4" onclick="toggleEditForm()">Edit Profile</button>
-        <button id="settings-btn" class="btn btn-info mt-4" onclick="toggleSettingsForm()">Settings</button>
+        <button id="edit-profile-btn" class="btn btn-warning" onclick="toggleEditForm()">Edit Profile</button>
+        <button id="settings-btn" class="btn btn-info" onclick="toggleSettingsForm()">Settings</button>
 
         <!-- Edit Profile Form -->
         <div id="edit-profile-form" style="display: none;" class="mt-4">
@@ -68,6 +96,48 @@
         </div>
     </div>
 
+    <!-- Post Section (New Feature) -->
+    <div class="post-section" style="margin-top: 30px; padding: 20px; background-color: #f4f4f4; border-radius: 8px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
+        <h2 style="margin-bottom: 20px; color: #333;">Posts</h2>
+        
+        <button id="newPostButton" class="btn btn-primary" data-toggle="modal" data-target="#postModal">
+            New Post
+        </button>
+
+        <div id="posts-list" style="margin-top: 20px;">
+            <!-- Posts will be dynamically loaded here -->
+        </div>
+        
+        <hr style="width: 100%; border: 1px solid #ccc; margin-top: 20px;">
+    </div>
+
+    <!-- Modal Structure -->
+    <div class="modal fade" id="postModal" tabindex="-1" role="dialog" aria-labelledby="postModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title" id="postModalLabel">Create New Post</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+            <!-- Media Upload (e.g., Image or Video) -->
+            <input type="file" class="form-control mb-3" id="mediaUpload">
+            
+            <!-- Caption Input -->
+            <textarea class="form-control" id="caption" placeholder="Enter your caption here..." rows="3"></textarea>
+        </div>
+        <div class="modal-footer">
+            <!-- Close Button -->
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+            <!-- Post Button (no functionality yet) -->
+            <button type="button" class="btn btn-primary">Post</button>
+        </div>
+        </div>
+    </div>
+    </div>
+
     <!-- Bottom Navigation Bar -->
     <nav class="navbar fixed-bottom navbar-light bg-light">
         <ul class="nav nav-pills nav-justified w-100">
@@ -86,8 +156,8 @@
         </ul>
     </nav>
 
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
     <script>

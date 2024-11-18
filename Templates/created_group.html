@@ -1,0 +1,77 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <!-- Group Information Section -->
+    <div class="d-flex justify-content-between align-items-center">
+        <h1>{{ group.name }}</h1>
+        <div>
+            <button class="btn btn-primary" id="search-member-btn" onclick="toggleSearchModal()">Search/Add Member</button>
+            <button class="btn btn-warning" id="edit-group-btn" onclick="toggleEditGroupForm()">Edit Group</button>
+        </div>
+    </div>
+    
+    <p><strong>Description:</strong> {{ group.description }}</p>
+    
+    <!-- Members List Section -->
+    <h4>Members:</h4>
+    <ul>
+        {% for member in group.members %}
+            <li>{{ member.username }} <button class="btn btn-danger btn-sm" onclick="removeMember({{ member.id }})">Remove</button></li>
+        {% else %}
+            <li>No members yet.</li>
+        {% endfor %}
+    </ul>
+</div>
+
+<!-- Search/Add Member Modal -->
+<div class="modal" id="search-member-modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Search/Add Member</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="toggleSearchModal()">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <input type="text" id="search-username" class="form-control" placeholder="Search for a user">
+                <ul id="search-results" class="mt-2">
+                    <!-- Search results will populate here -->
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Group Form -->
+<div class="modal" id="edit-group-modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Edit Group</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="toggleEditGroupForm()">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form method="POST" action="{{ url_for('main.edit_group', group_id=group.id) }}">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="group-name">Group Name</label>
+                        <input type="text" id="group-name" name="group_name" class="form-control" value="{{ group.name }}" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="group-description">Group Description</label>
+                        <textarea id="group-description" name="group_description" class="form-control" required>{{ group.description }}</textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                    <button type="button" class="btn btn-danger" onclick="deleteGroup()">Delete Group</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+</div>
+
+{% endblock %}

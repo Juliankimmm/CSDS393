@@ -1,5 +1,6 @@
 from flask_sqlalchemy import SQLAlchemy
 from flask import Flask
+from datetime import datetime
 
 db = SQLAlchemy()
 
@@ -10,6 +11,7 @@ class User(db.Model):
     bio = db.Column(db.String(300))
     pr = db.Column(db.String(150))
     social_media = db.Column(db.String(300))
+    posts = db.relationship('Post', back_populates='user')
 
 class WorkoutLog(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -32,37 +34,6 @@ class Group(db.Model):
         self.name = name
         self.description = description
 
-    # Getters
-    def get_group_name(self):
-        return self.name
-
-    def get_group_description(self):
-        return self.description
-
-    def get_group_privacy_settings(self):
-        return self.privacy_settings
-
-    def get_group_members(self):
-        return self.members.all() 
-
-    def get_member_requests(self):
-        return self.member_requests
-
-    # Setters
-    def set_group_name(self, name):
-        self.name = name
-
-    def set_group_description(self, description):
-        self.description = description
-
-    def set_group_privacy_settings(self, privacy_settings):
-        self.privacy_settings = privacy_settings
-
-    def set_group_members(self, members):
-        self.members = members 
-
-    def set_member_requests(self, member_requests):
-        self.member_requests = member_requests 
 
 
 class Post(db.Model):
@@ -70,35 +41,14 @@ class Post(db.Model):
     __tablename__ = 'posts'
 
     id = db.Column(db.Integer, primary_key=True)
-    #user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
-    content = db.Column(db.String(300))
-    media_url = db.Column(db.String(300))
+    media_url = db.Column(db.String(500), nullable=False) 
+    caption = db.Column(db.String(500), nullable=True) 
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False) 
+    user = db.relationship('User', backref=db.backref('posts', lazy=True))
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)  
 
-    def __init__(self, user_id, content="", media_url=""):
-        self.user_id = user_id
-        self.content = content 
-        self.media_url = media_url
-
-    # Getter methods
-    def get_id(self):
-        return self.id
-
-    def get_user_id(self):
-        return self.user_id
-
-    def get_content(self):
-        return self.content
-
-    def get_media_url(self):
-        return self.media_url
-    
-    # Setter methods
-    def set_content(self, content):
-        self.content = content
-
-    def set_media_url(self, media_url):
-        self.media_url = media_url
-    
+    def __repr__(self):
+        return f"<Post {self.id} by User {self.user_id}>"
 
 
 class GroupMembers(db.Model):
