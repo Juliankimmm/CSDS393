@@ -110,7 +110,7 @@ class WorkoutLog(db.Model):
     def set_log_notes(self, logNotes):
         self.notes = logNotes
         db.session.commit()
-
+        '''
     # Add set to the exercise (assuming you have a 'Set' model)
     def add_set(self, exerciseID, set_details):
         exercise = Exercise.query.get(exerciseID)
@@ -125,7 +125,7 @@ class WorkoutLog(db.Model):
         if set_to_remove and set_to_remove.exercise_id == exerciseID:
             db.session.delete(set_to_remove)
             db.session.commit()
-
+        '''
     # Update weight used for the exercise
     def update_weight(self, exerciseID, exerciseWeight):
         exercise = Exercise.query.get(exerciseID)
