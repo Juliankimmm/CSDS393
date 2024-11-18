@@ -17,15 +17,12 @@ class TestUserSearch(unittest.TestCase):
         # Set up the Flask app and test database
         app.config['TESTING'] = True
         app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///test.db'
-
+        
+        # Push application context for the entire test
         self.app_context = app.app_context()
         self.app_context.push()
         db.create_all()
-
         self.app = app.test_client()
-
-        #with app.app_context():
-         #   db.create_all()
 
         # Initialize the user manager and create test users
         self.user_manager = UserProfileManager()
