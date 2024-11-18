@@ -1,4 +1,4 @@
-from models import db, WorkoutLog, User
+from models import db, WorkoutLog, User, Exercise
 from flask_sqlalchemy import SQLAlchemy
 
 db = SQLAlchemy()
