@@ -20,7 +20,7 @@ class TestExercise(unittest.TestCase):
             db.create_all()
 
         # Initialize an exercise for testing
-        self.exercise = Exercise("Push-Up", exerciseSets=3, exerciseWeights=0)
+        self.exercise = Exercise("Push-Up", 5, [0,0,0,0,0], [5,6,7,7,8])
 
     def tearDown(self):
         # Clean up the database after each test
