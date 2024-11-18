@@ -1,5 +1,7 @@
+import os
 import qrcode
-from models import db, Group, User, GroupWorkoutLog, Post
+from flask import current_app
+from models import db, Group, User
 
 class GroupManager:
     def create_group(self, group_name, group_description):
@@ -13,10 +15,28 @@ class GroupManager:
         if not group:
             raise ValueError("Group not found")
         join_link = f"https://example.com/group/{group_id}/join"
-        qr_code = qrcode.make(join_link)
-        qr_code_file = f"group_{group_id}_invite.png"
-        qr_code.save(qr_code_file)
-        return join_link, qr_code_file
+        
+        # Generate QR code
+        qr = qrcode.QRCode(
+            version=1,
+            box_size=10,
+            border=5
+        )
+        qr.add_data(join_link)
+        qr.make(fit=True)
+        img = qr.make_image(fill='black', back_color='white')
+        
+        # Ensure the 'static/qr_codes' directory exists
+        qr_codes_dir = os.path.join(current_app.root_path, 'static', 'qr_codes')
+        os.makedirs(qr_codes_dir, exist_ok=True)
+        
+        qr_code_filename = f"group_{group_id}_invite.png"
+        qr_code_path = os.path.join(qr_codes_dir, qr_code_filename)
+        img.save(qr_code_path)
+        
+        # Return the relative path to the QR code image
+        qr_code_url = f"qr_codes/{qr_code_filename}"
+        return join_link, qr_code_url
 
     def send_join_request(self, user_id, group_id):
         group = Group.query.get(group_id)
