@@ -1,7 +1,7 @@
 '''import unittest
 
 
-from app import app
+from Collegym.app import app
 from models import db
 from user_profile_manager import UserProfileManager
 

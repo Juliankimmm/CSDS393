@@ -1,6 +1,6 @@
 import unittest
 
-from app import app
+from Collegym.app import app
 from models import db
 from post_manager import PostManager
 from user_profile_manager import UserProfileManager

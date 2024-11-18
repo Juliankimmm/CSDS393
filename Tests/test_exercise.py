@@ -1,6 +1,6 @@
 import unittest
 
-from app import app
+from Collegym.app import app
 from exercise import Exercise
 from models import db
 
