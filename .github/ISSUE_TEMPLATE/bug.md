@@ -1,6 +1,6 @@
 ---
-name: Bug report
-about: Create a report to help us improve
+name: Bug
+about: groupworkout
 title: ''
 labels: ''
 assignees: ''
@@ -8,7 +8,7 @@ assignees: ''
 ---
 
 **Describe the bug**
-A clear and concise description of what the bug is.
+Once the `"Create Group" button is clicked on the group workout page, it is unable to form a group workout environment that includes a QR code, a name, and a description. Also implement DB in order to save it. 
 
 **To Reproduce**
 Steps to reproduce the behavior:
@@ -18,7 +18,7 @@ Steps to reproduce the behavior:
 4. See error
 
 **Expected behavior**
-A clear and concise description of what you expected to happen.
+Once the `"Create Group" button is clicked on the group workout page, it should form a group workout environment that includes a QR code, a name, and a description. Also implement DB in order to save it. 
 
 **Screenshots**
 If applicable, add screenshots to help explain your problem.
