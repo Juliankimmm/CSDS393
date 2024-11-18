@@ -28,7 +28,7 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install flake8 pytest
+        pip install flake8 pytest pytest-cov
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
     
     - name: Lint with flake8
@@ -40,7 +40,7 @@ jobs:
     
     - name: Test with pytest
       run: |
-        pytest
+        pytest --cov=Final_Project --cov-report=xml --cov-report=term --disable-warnings
     
     - name: Test with unittest
       run: |
