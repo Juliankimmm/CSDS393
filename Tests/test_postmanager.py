@@ -1,7 +1,8 @@
-# Test file for the PostManager class
-# All of the imports here can be changed, I just don't know how things are laid out yet exactly.
-
 import unittest
+import sys
+import os
+
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from app import app
 from models import db
 from post_manager import PostManager
@@ -12,8 +13,8 @@ class TestMultimediaUpload(unittest.TestCase):
 
     def setUp(self):
         # Set up the Flask app and test database
-        app.config['TESTING'] = True
-        app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///test.db'
+        app.config["TESTING"] = True
+        app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///test.db"
         self.app = app.test_client()
 
         with app.app_context():
@@ -22,7 +23,8 @@ class TestMultimediaUpload(unittest.TestCase):
         # Initialize managers and create a test user
         self.post_manager = PostManager()
         self.user_manager = UserProfileManager()
-        self.user = self.user_manager.create_user_profile("testuser", "password", "bio")
+        self.user = self.user_manager.create_user_profile(
+            "testuser", "password", "bio")
 
     def tearDown(self):
         # Clean up the database after each test
@@ -32,18 +34,22 @@ class TestMultimediaUpload(unittest.TestCase):
 
     def test_upload_image(self):
         # Simulate uploading an image
-        image_data = b'imagebytes'  # In a real case, this would be actual image data
-        post = self.post_manager.create_post(self.user.username, image_data, caption="First Workout Pic")
+        image_data = b"imagebytes"  # In a real case, this would be actual image data
+        post = self.post_manager.create_post(
+            self.user.username, image_data, caption="First Workout Pic"
+        )
         self.assertIsNotNone(post)
         self.assertEqual(post.username, "testuser")
         self.assertEqual(post.caption, "First Workout Pic")
 
     def test_upload_invalid_file(self):
         # Simulate uploading an invalid file
-        invalid_data = b'notanimage'
+        invalid_data = b"notanimage"
         with self.assertRaises(ValueError):
-            self.post_manager.create_post(self.user.username, invalid_data, caption="Invalid File")
+            self.post_manager.create_post(
+                self.user.username, invalid_data, caption="Invalid File"
+            )
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

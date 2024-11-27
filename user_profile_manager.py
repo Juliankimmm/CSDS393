@@ -1,4 +1,5 @@
-from models import db, User
+from models import User, db
+
 
 class UserProfileManager:
     # Creating a user profile
@@ -10,7 +11,7 @@ class UserProfileManager:
 
     # Searching for a user by username
     def search_user(self, username):
-        return User.query.filter(User.username.ilike(f'%{username}%')).all()
+        return User.query.filter(User.username.ilike(f"%{username}%")).all()
 
     # Deleting a user profile by username
     def delete_user_profile(self, username):
@@ -24,8 +25,12 @@ class UserProfileManager:
         requestor = User.query.get(requestor_id)
         user = User.query.get(user_id)
         if requestor and user:
-            user.friends.append(requestor)  # Assuming `friends` is a relationship in the User model
-            user.pending_requests.remove(requestor)  # Assuming `pending_requests` is a relationship
+            user.friends.append(
+                requestor
+            )  # Assuming `friends` is a relationship in the User model
+            user.pending_requests.remove(
+                requestor
+            )  # Assuming `pending_requests` is a relationship
             db.session.commit()
 
     # Rejecting a friend request
@@ -41,7 +46,8 @@ class UserProfileManager:
         user = User.query.get(user_id)
         requested_user = User.query.get(requested_id)
         if user and requested_user:
-            requested_user.pending_requests.append(user)  # Add to pending requests
+            requested_user.pending_requests.append(
+                user)  # Add to pending requests
             db.session.commit()
             return True
         return False

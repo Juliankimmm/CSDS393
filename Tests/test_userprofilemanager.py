@@ -1,14 +1,13 @@
-# Test file for the GroupManager class
-# All of the imports here can be changed, I just don't know how things are laid out yet exactly.
-
+import unittest
 import sys
 import os
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
-import unittest
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from app import app
 from models import db
 from user_profile_manager import UserProfileManager
+
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
 
 class TestUserSearch(unittest.TestCase):
@@ -29,8 +28,10 @@ class TestUserSearch(unittest.TestCase):
 
         # Initialize the user manager and create test users
         self.user_manager = UserProfileManager()
-        self.user1 = self.user_manager.create_user_profile("user1", "password1", "Bio1")
-        self.user2 = self.user_manager.create_user_profile("user2", "password2", "Bio2")
+        self.user1 = self.user_manager.create_user_profile(
+            "user1", "password1", "Bio1")
+        self.user2 = self.user_manager.create_user_profile(
+            "user2", "password2", "Bio2")
 
     def tearDown(self):
         # Clean up the database after each test
@@ -57,5 +58,5 @@ class TestUserSearch(unittest.TestCase):
         self.assertIsNone(result)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

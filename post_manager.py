@@ -1,4 +1,5 @@
-from models import db, Post, User
+from models import Post, User, db
+
 
 class PostManager:
     def create_post(self, username, media_url, caption):
@@ -19,10 +20,7 @@ class PostManager:
         post = Post.query.get(postID)
         if not post:
             raise ValueError("Post does not exist")
-        post_content = {
-            'file': post.media_url,
-            'caption': post.content
-        }
+        post_content = {"file": post.media_url, "caption": post.content}
         return post_content
 
     def display_user_info(self, postID):
@@ -31,8 +29,8 @@ class PostManager:
             raise ValueError("Post does not exist")
         user = User.query.get(post.user_id)
         user_info = {
-            'username': user.username,
-            'profile_picture': user.profile_picture  # Assuming 'profile_picture' exists
+            "username": user.username,
+            "profile_picture": user.profile_picture,  # Assuming 'profile_picture' exists
         }
         return user_info
 
@@ -59,14 +57,16 @@ class PostManager:
         user = User.query.get(userID)
         if not post or not user:
             raise ValueError("Post or User does not exist")
-        post.comments.append({'user_id': user.id, 'comment': comment})
+        post.comments.append({"user_id": user.id, "comment": comment})
         db.session.commit()
 
     def remove_comment(self, postID, userID):
         post = Post.query.get(postID)
         if not post:
             raise ValueError("Post does not exist")
-        post.comments = [comment for comment in post.comments if comment['user_id'] != userID]
+        post.comments = [
+            comment for comment in post.comments if comment["user_id"] != userID
+        ]
         db.session.commit()
 
     def delete_post(self, postID):
@@ -87,8 +87,5 @@ class PostManager:
         post = Post.query.get(postID)
         if not post or post.group_id != groupID:
             raise ValueError("Post does not exist in the specified group")
-        post_content = {
-            'file': post.media_url,
-            'caption': post.content
-        }
+        post_content = {"file": post.media_url, "caption": post.content}
         return post_content
