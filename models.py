@@ -6,67 +6,38 @@ db = SQLAlchemy()
 
 
 class User(db.Model):
+    __tablename__ = "users"
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(150), unique=True, nullable=False)
     password = db.Column(db.String(150), nullable=False)
     bio = db.Column(db.String(300))
     pr = db.Column(db.String(150))
     social_media = db.Column(db.String(300))
-    posts = db.relationship('Post', back_populates='user')
+    posts = db.relationship('Post', back_populates='user',lazy='dynamic')
+    workout_logs = db.relationship('WorkoutLog', back_populates='user', lazy='dynamic')
+    group_memberships = db.relationship('GroupMembers', back_populates='user')
 
 
 class WorkoutLog(db.Model):
+    __tablename__ = "workout_logs"
     id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey("user.id"))
+    user_id = db.Column(db.Integer, db.ForeignKey("users.id"))
     exercise = db.Column(db.String(100))
     reps = db.Column(db.Integer)
     weight = db.Column(db.Float)
     rpe = db.Column(db.Float)
     notes = db.Column(db.String(255))
+    user = db.relationship('User', back_populates='workout_logs')
 
 
 class Group(db.Model):
-    __tablename__ = "group"
+    __tablename__ = "groups"
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(150), unique=True, nullable=False)
     description = db.Column(db.String(300))
-
-    def __init__(self, name, description="", privacy_settings="public"):
-        self.name = name
-        self.description = description
-
-    # Getters
-    def get_group_name(self):
-        return self.name
-
-    def get_group_description(self):
-        return self.description
-
-    def get_group_privacy_settings(self):
-        return self.privacy_settings
-
-    def get_group_members(self):
-        return self.members.all()
-
-    def get_member_requests(self):
-        return self.member_requests
-
-    # Setters
-    def set_group_name(self, name):
-        self.name = name
-
-    def set_group_description(self, description):
-        self.description = description
-
-    def set_group_privacy_settings(self, privacy_settings):
-        self.privacy_settings = privacy_settings
-
-    def set_group_members(self, members):
-        self.members = members
-
-    def set_member_requests(self, member_requests):
-        self.member_requests = member_requests
+    privacy_settings = db.Column(db.String(300))
+    members = db.relationship('GroupMembers', back_populates='group')
 
 
 class Post(db.Model):
@@ -77,43 +48,25 @@ class Post(db.Model):
     media_url = db.Column(db.String(500), nullable=False) 
     caption = db.Column(db.String(500), nullable=True) 
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False) 
-    user = db.relationship('User', backref=db.backref('posts', lazy=True))
+    user = db.relationship('User', back_populates='posts')
     created_at = db.Column(db.DateTime, default=datetime.utcnow)  
 
     def __repr__(self):
         return f"<Post {self.id} by User {self.user_id}>"
 
-    def __init__(self, user_id, content="", media_url=""):
+    def __init__(self, user_id, caption="", media_url=""):
         self.user_id = user_id
-        self.content = content
-        self.media_url = media_url
-
-    # Getter methods
-    def get_id(self):
-        return self.id
-
-    def get_user_id(self):
-        return self.user_id
-
-    def get_content(self):
-        return self.content
-
-    def get_media_url(self):
-        return self.media_url
-
-    # Setter methods
-    def set_content(self, content):
-        self.content = content
-
-    def set_media_url(self, media_url):
+        self.content = caption
         self.media_url = media_url
 
 
 class GroupMembers(db.Model):
     __tablename__ = "group_members"
-    group_id = db.Column(db.Integer, db.ForeignKey(
-        "group.id"), primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey("user.id"), primary_key=True)
+    group_id = db.Column(db.Integer, db.ForeignKey("groups.id"), primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey("users.id"), primary_key=True)
+    
+    group = db.relationship('Group', back_populates='members')
+    user = db.relationship('User', back_populates='group_memberships')
 
 
 class Exercise(db.Model):
@@ -121,19 +74,19 @@ class Exercise(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), unique=True, nullable=False)
-    details = db.Column(db.String(255))  # Add more fields as necessary
+    details = db.Column(db.String(255))
     weight = db.Column(db.Float)
     rpe = db.Column(db.Float)
 
-    # Optionally add relationship with Set (if you have sets for exercises)
-    sets = db.relationship("Set", backref="exercise", lazy=True)
+    sets = db.relationship("Set", back_populates='exercise', lazy=True)
 
 
 class Set(db.Model):
-    __tablename__ = "set"
+    __tablename__ = "sets"
 
     id = db.Column(db.Integer, primary_key=True)
     exercise_id = db.Column(db.Integer, db.ForeignKey("exercise.id"))
     weight = db.Column(db.Float)
     reps = db.Column(db.Integer)
     rpe = db.Column(db.Float)
+    exercise = db.relationship("Exercise", back_populates="sets")

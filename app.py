@@ -1,31 +1,30 @@
 import os
-
 from flask import Flask
 from flask_migrate import Migrate
-import sys
-print(sys.path)
-from models import db, User, WorkoutLog, Group, Post, GroupMembers  # Models import
+from models import db
 from routes import main
 
-app = Flask(__name__)
+def create_app():
+    # Create Flask app instance
+    app = Flask(__name__)
 
-# Set configurations
-app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv(
-    "DATABASE_URI", "sqlite:///test.db")
-# Disable modification tracking
-app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
-app.config["SECRET_KEY"] = os.getenv("SECRET_KEY", "your_secret_key")
+    # Set configurations
+    app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv(
+        "DATABASE_URI", "sqlite:///test.db"
+    )
+    app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+    app.config["SECRET_KEY"] = os.getenv("SECRET_KEY", "your_secret_key")
 
-# Initialize database
-db.init_app(app)
+    # Initialize database and migrations
+    db.init_app(app)
+    migrate = Migrate(app, db)
 
-# Create tables only if the database file doesn't already exist
-if not os.path.exists("test.db"):
-    with app.app_context():
-        db.create_all()
+    # Register Blueprints
+    app.register_blueprint(main)
 
-# Register Blueprints
-app.register_blueprint(main)
+    return app
+
+collegym = create_app()
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    collegym.run(debug=True)
