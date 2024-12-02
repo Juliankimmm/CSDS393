@@ -14,6 +14,10 @@ def create_app():
     )
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
     app.config["SECRET_KEY"] = os.getenv("SECRET_KEY", "your_secret_key")
+    app.config["UPLOAD_FOLDER"] = os.path.join(
+    "C:/Users/steph/OneDrive/Desktop/CWRU 2024-2025/CSDS 393/Final_Project", 
+    "static/uploads/profile_pics"
+    )
 
     # Initialize database and migrations
     db.init_app(app)

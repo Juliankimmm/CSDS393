@@ -5,6 +5,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Groups - Collegym</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            padding-bottom: 60px;
+        }
+        .container {
+            max-height: calc(100vh - 60px);
+            overflow-y: auto;
+        }
+        .arrow-icon {
+            transition: transform 0.3s ease !important;
+        }
+        button[aria-expanded="true"] .arrow-icon {
+            transform: rotate(90deg) !important;
+        }
+    </style>
 </head>
 <body>
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
@@ -37,7 +52,49 @@
         <h3>Available Groups</h3>
         <ul class="list-group">
             {% for group in groups %}
-            <li class="list-group-item">{{ group.name }} - {{ group.description }}</li>
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+                <div>
+                    {{ group.name }}
+                </div>
+                <!-- Expand/Collapse Arrow -->
+                <span class="arrow-icon" data-toggle="collapse" data-target="#group-{{ group.id }}" aria-expanded="false" aria-controls="group-{{ group.id }}">
+                    &#9656;
+                </span>
+            </li>
+            <!-- Collapsible Details -->
+            <div id="group-{{ group.id }}" class="collapse">
+                <p><strong>Description:</strong> {{ group.description }}</p>
+                <p><strong>Members:</strong></p>
+                <ul>
+                    {% for member in group.members %}
+                        <ul>{{ member.username }}</ul>  <!-- Assuming 'username' is a field of the User model -->
+                    {% endfor %}
+                </ul>
+                <button class="btn btn-primary" data-toggle="modal" data-target="#searchModal-{{ group.id }}">
+                    Add Members
+                </button>
+            </div>
+            <div class="modal fade" id="searchModal-{{ group.id }}" tabindex="-1" role="dialog" aria-labelledby="searchModalLabel-{{ group.id }}" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="searchModalLabel-{{ group.id }}">Search for Members</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <input type="text" class="form-control" id="searchBar-{{ group.id }}" placeholder="Search for users..." oninput="searchUsers(event, {{ group.id }})">
+                            <ul id="searchResults-{{ group.id }}" class="list-group mt-3">
+                                <!-- Dynamic search results will be populated here -->
+                            </ul>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
             {% endfor %}
         </ul>
     </div>
@@ -59,9 +116,69 @@
             </li>
         </ul>
     </nav>
-
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('.group-details').forEach(groupDetails => {
+                groupDetails.addEventListener('show.bs.collapse', function() {
+                    const groupId = groupDetails.id.replace('group-', '');  // Get the group ID from the ID of the container
+                    const memberList = document.querySelector(`#members-${groupId}`);
+    
+                    // Check if the members are already loaded
+                    if (memberList.children.length === 0) {
+                        fetch(`/group/${groupId}/members`)
+                            .then(response => response.json())
+                            .then(data => {
+                                if (data.error) {
+                                    memberList.innerHTML = `<li>${data.error}</li>`;
+                                } else {
+                                    data.forEach(member => {
+                                        const listItem = document.createElement('li');
+                                        listItem.textContent = member.username;
+                                        memberList.appendChild(listItem);
+                                    });
+                                }
+                            })
+                            .catch(err => {
+                                memberList.innerHTML = '<li>Error loading members.</li>';
+                                console.error('Error fetching members:', err);
+                            });
+                    }
+                });
+            });
+        });
+
+        function searchUsers(event, groupId) {
+            const query = event.target.value;
+            const resultsContainer = document.getElementById(`searchResults-${groupId}`);
+
+            // Clear previous results
+            resultsContainer.innerHTML = '';
+
+            if (query.length > 2) {
+                fetch(`/search/users?query=${query}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.error) {
+                            resultsContainer.innerHTML = `<li class="list-group-item">${data.error}</li>`;
+                        } else {
+                            data.forEach(user => {
+                                const listItem = document.createElement('li');
+                                listItem.classList.add('list-group-item');
+                                listItem.textContent = user.username;
+                                resultsContainer.appendChild(listItem);
+                            });
+                        }
+                    })
+                    .catch(err => {
+                        resultsContainer.innerHTML = '<li class="list-group-item">Error loading search results.</li>';
+                        console.error('Error searching users:', err);
+                    });
+            }
+        }
+    </script>
 </body>
 </html>

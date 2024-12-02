@@ -1,7 +1,8 @@
+import os
 from flask import (Blueprint, flash, jsonify, redirect, render_template,
-                   request, session, url_for)
-
-from models import Group, Post, User, WorkoutLog, db
+                   request, session, url_for, current_app)
+from werkzeug.utils import secure_filename
+from models import Group, Post, User, WorkoutLog, GroupMembers, db
 from user_profile_manager import UserProfileManager
 
 main = Blueprint("main", __name__)
@@ -53,13 +54,36 @@ def create_account():
     return redirect(url_for("main.profile", user_id=new_user.id))
 
 
-@main.route("/profile/<int:user_id>")
+@main.route("/profile/<int:user_id>", methods=["GET", "POST"])
 def profile(user_id):
     if "user_id" not in session or session["user_id"] != user_id:
         flash("You need to log in first", "warning")
         return redirect(url_for("main.login"))
+
     user = User.query.get_or_404(user_id)
+
+    if request.method == "POST":
+        if "bio" in request.form:
+            user.bio = request.form["bio"]
+        if "pr" in request.form:
+            user.pr = request.form["pr"]
+        if "social_media" in request.form:
+            user.social_media = request.form["social_media"]
+
+        if "profile_picture" in request.files:
+            file = request.files["profile_picture"]
+            if file.filename != "":
+                from werkzeug.utils import secure_filename
+                filename = secure_filename(file.filename)
+                filepath = os.path.join(current_app.config["UPLOAD_FOLDER"], filename)
+                file.save(filepath)
+                user.profile_picture = filename
+        db.session.commit()
+        flash("Profile updated successfully!", "success")
+        return redirect(request.url)
+
     workout_logs = WorkoutLog.query.filter_by(user_id=user_id).all()
+
     return render_template("profile.html", user=user, workout_logs=workout_logs)
 
 
@@ -68,6 +92,7 @@ def workout_log(user_id):
     if "user_id" not in session or session["user_id"] != user_id:
         flash("You need to login first", "warning")
         return redirect(url_for("main.login"))
+    workout_logs = WorkoutLog.query.filter_by(user_id=user_id).order_by(WorkoutLog.timestamp.desc()).all()
     if request.method == "POST":
         user_id = session["user_id"]
         exercise = request.form["exercise"]
@@ -94,9 +119,14 @@ def group(user_id):
         group = Group(name=name, description=description)
         db.session.add(group)
         db.session.commit()
+        group_member = GroupMembers(group_id=group.id, user_id=user_id)
+        db.session.add(group_member)
+        db.session.commit()
         return redirect(url_for("main.group", user_id=user_id))
-    groups = Group.query.all()
-    return render_template("group.html", groups=groups)
+    user_groups = Group.query.join(GroupMembers, Group.id == GroupMembers.group_id) \
+                              .filter((GroupMembers.user_id == user_id)) \
+                              .all()
+    return render_template("group.html", groups=user_groups)
 
 
 @main.route("/search", methods=["GET"])
@@ -108,3 +138,14 @@ def search_users():
         usernames = [user.username for user in results]
         return jsonify(usernames)
     return jsonify([])
+
+@main.route('/group/<int:group_id>/members', methods=['GET'])
+def get_group_members(group_id):
+    group = Group.query.get(group_id)
+    if not group:
+        return jsonify({'error': 'Group not found'}), 404
+    members = [
+        {'id': user.id, 'username': user.username}
+        for user in group.members
+    ]
+    return jsonify(members)

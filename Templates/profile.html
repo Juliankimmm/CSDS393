@@ -10,6 +10,14 @@
         body {
             padding-bottom: 60px;
         }
+        .profile-container {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        .profile-details {
+            flex: 1;
+        }
     </style>
 </head>
 <body>
@@ -43,32 +51,55 @@
             </div>
           </div>
     </nav>
+
     <div class="container mt-5">
-        <h2>{{ user.username }}'s Profile</h2>
-        <p><strong>Bio:</strong> <span id="bio">{{ user.bio }}</span></p>
-        <p><strong>Personal Records:</strong> <span id="prs">{{ user.pr }}</span></p>
-        <p><strong>Social Media:</strong> <span id="social-media">{{ user.social_media }}</span></p>
-        <a href="{{ url_for('main.workout_log', user_id=session['user_id']) }}" class="btn btn-primary">Log a Workout</a>
-        <a href="{{ url_for('main.group', user_id=session['user_id']) }}" class="btn btn-secondary">Groups</a>
+        <div class="profile-container">
+            <!-- Profile Picture -->
+            <div class="profile-picture">
+                {% if user.profile_picture %}
+                    <img src="{{ url_for('static', filename='uploads/profile_pics/' + user.profile_picture) }}" 
+                        alt="Profile Picture" 
+                        style="width: 150px; height: 150px; border-radius: 50%;">
+                {% else %}
+                    <p>No profile picture uploaded</p>
+                {% endif %}
+            </div>
+        
+            <!-- Profile Details -->
+            <div class="profile-details">
+                <h2>{{ user.username }}</h2>
+                <p><strong>Bio:</strong> {{ user.bio }}</p>
+                <p><strong>Personal Records:</strong> {{ user.pr }}</p>
+                <p><strong>Social Media Links:</strong> {{ user.social_media }}</p>
+            </div>
+        </div>
 
         <button id="edit-profile-btn" class="btn btn-warning" onclick="toggleEditForm()">Edit Profile</button>
         <button id="settings-btn" class="btn btn-info" onclick="toggleSettingsForm()">Settings</button>
 
         <!-- Edit Profile Form -->
-        <div id="edit-profile-form" style="display: none;" class="mt-4">
-            <form action="{{ url_for('main.profile', user_id=session['user_id']) }}" method="POST">
+        <div id="edit-profile-form" class="mt-4">
+            <form action="{{ url_for('main.profile', user_id=session['user_id']) }}" method="POST" enctype="multipart/form-data">
                 <div class="form-group">
                     <label for="bio-input">Edit Bio:</label>
                     <textarea class="form-control" id="bio-input" name="bio" rows="3">{{ user.bio }}</textarea>
                 </div>
+        
                 <div class="form-group">
                     <label for="prs-input">Edit Personal Records:</label>
                     <input type="text" class="form-control" id="prs-input" name="pr" value="{{ user.pr }}">
                 </div>
+        
                 <div class="form-group">
                     <label for="social-media-input">Edit Social Media Links:</label>
                     <input type="text" class="form-control" id="social-media-input" name="social_media" value="{{ user.social_media }}">
                 </div>
+        
+                <div class="form-group">
+                    <label for="profile-picture-input">Upload Profile Picture:</label>
+                    <input type="file" class="form-control" id="profile-picture-input" name="profile_picture">
+                </div>
+        
                 <button type="submit" class="btn btn-success">Save Changes</button>
             </form>
         </div>

@@ -103,7 +103,20 @@
         <hr>
         <h4>Workout Log History</h4>
         <div id="workout-log-history">
-            <!-- Workout entries will be dynamically inserted here -->
+            {% for log in workout_logs %}
+                <div class="workout-log-entry">
+                    <h5>{{ log.name }} - {{ log.timestamp.strftime('%Y-%m-%d %H:%M') }}</h5>
+                    <p>{{ log.notes }}</p>
+                    <p><strong>Exercises:</strong></p>
+                    <ul>
+                        {% for exercise in log.exercises %}
+                            <li>{{ exercise.name }}: {{ exercise.weight }} lbs for {{ exercise.reps }} reps, RPE: {{ exercise.rpe }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            {% else %}
+                <p>No workout logs found.</p>
+            {% endfor %}
         </div>
     </div>
 

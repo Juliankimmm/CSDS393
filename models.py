@@ -13,6 +13,7 @@ class User(db.Model):
     bio = db.Column(db.String(300))
     pr = db.Column(db.String(150))
     social_media = db.Column(db.String(300))
+    profile_picture = db.Column(db.String(150))
     posts = db.relationship('Post', back_populates='user',lazy='dynamic')
     workout_logs = db.relationship('WorkoutLog', back_populates='user', lazy='dynamic')
     group_memberships = db.relationship('GroupMembers', back_populates='user')
@@ -27,6 +28,7 @@ class WorkoutLog(db.Model):
     weight = db.Column(db.Float)
     rpe = db.Column(db.Float)
     notes = db.Column(db.String(255))
+    timestamp = db.Column(db.DateTime, default=datetime.utcnow)
     user = db.relationship('User', back_populates='workout_logs')
 
 

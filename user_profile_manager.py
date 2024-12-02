@@ -1,4 +1,6 @@
 from models import User, db
+from werkzeug.utils import secure_filename
+import os
 
 
 class UserProfileManager:
@@ -153,4 +155,13 @@ class UserProfileManager:
         user = User.query.get(user_id)
         if user:
             user.unit_preferences = unit_preferences
+            db.session.commit()
+
+    def save_profile_picture(self, user_id, picture):
+        user = User.query.get(user_id)
+        if user:
+            filename = secure_filename(picture.filename)
+            upload_path = os.path.join('static/uploads/profile_pics', filename)
+            picture.save(upload_path)
+            user.profile_picture = filename
             db.session.commit()
