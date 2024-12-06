@@ -64,12 +64,11 @@
             <!-- Collapsible Details -->
             <div id="group-{{ group.id }}" class="collapse">
                 <p><strong>Description:</strong> {{ group.description }}</p>
-                <p><strong>Members:</strong></p>
-                <ul>
+                <p><strong>Members:</strong>
                     {% for member in group.members %}
-                        <ul>{{ member.username }}</ul>  <!-- Assuming 'username' is a field of the User model -->
+                        {{ member.user.username }}{% if not loop.last %}, {% endif %} 
                     {% endfor %}
-                </ul>
+                </p>
                 <button class="btn btn-primary" data-toggle="modal" data-target="#searchModal-{{ group.id }}">
                     Add Members
                 </button>
@@ -84,7 +83,7 @@
                             </button>
                         </div>
                         <div class="modal-body">
-                            <input type="text" class="form-control" id="searchBar-{{ group.id }}" placeholder="Search for users..." oninput="searchUsers(event, {{ group.id }})">
+                            <input type="text" class="form-control" id="searchBar-{{ group.id }}" placeholder="Search for users..." oninput="searchUsers(event, '{{ group.id }}')">
                             <ul id="searchResults-{{ group.id }}" class="list-group mt-3">
                                 <!-- Dynamic search results will be populated here -->
                             </ul>
@@ -157,18 +156,31 @@
 
             // Clear previous results
             resultsContainer.innerHTML = '';
-
             if (query.length > 2) {
-                fetch(`/search/users?query=${query}`)
+                fetch(`/search?query=${query}`)
                     .then(response => response.json())
                     .then(data => {
-                        if (data.error) {
-                            resultsContainer.innerHTML = `<li class="list-group-item">${data.error}</li>`;
+                        if (data.length === 0) {
+                            resultsContainer.innerHTML = '<li class="list-group-item">No users found</li>';
                         } else {
-                            data.forEach(user => {
+                            data.forEach(username => {
                                 const listItem = document.createElement('li');
                                 listItem.classList.add('list-group-item');
-                                listItem.textContent = user.username;
+
+                                // Create the username text
+                                const usernameText = document.createElement('span');
+                                usernameText.textContent = username;
+                                listItem.appendChild(usernameText);
+
+                                // Create the "Add Member" button
+                                const addButton = document.createElement('button');
+                                addButton.classList.add('btn', 'btn-primary', 'ml-3');
+                                addButton.textContent = 'Add Member';
+                                addButton.onclick = function () {
+                                    addMemberToGroup(groupId, username);
+                                };
+                                listItem.appendChild(addButton);
+
                                 resultsContainer.appendChild(listItem);
                             });
                         }
@@ -178,6 +190,35 @@
                         console.error('Error searching users:', err);
                     });
             }
+        }
+
+        function addMemberToGroup(groupId, username) {
+            fetch(`/group/${groupId}/add_member`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ username: username }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    alert(data.error);
+                } else {
+                    alert(data.message);
+                    updateMemberList(groupId, username);
+                }
+            })
+            .catch(err => {
+                console.error('Error adding member:', err);
+            });
+        }
+
+        function updateMemberList(groupId, username) {
+            const membersContainer = document.getElementById(`group-${groupId}-members`);
+            const newMemberItem = document.createElement('li');
+            newMemberItem.textContent = username;
+            membersContainer.appendChild(newMemberItem);
         }
     </script>
 </body>

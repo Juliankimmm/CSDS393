@@ -8,12 +8,12 @@ from user_profile_manager import UserProfileManager
 main = Blueprint("main", __name__)
 profile_manager = UserProfileManager()
 
-
+# Default route that is displayed when the app is launched.
 @main.route("/")
 def index():
     return render_template("index.html")
 
-
+# The update_preferences route handles the posting of settings not already covered by the profile route.
 @main.route("/update_preferences/<int:user_id>", methods=["POST"])
 def update_preferences(user_id):
     privacy_settings = request.form.get("privacy_settings")
@@ -23,7 +23,7 @@ def update_preferences(user_id):
     flash("Preferences updated successfully.")
     return redirect(url_for("main.profile", user_id=user_id))
 
-
+# Handles the login page, both for its display and the accepting of information to direct the yser to their profile.
 @main.route("/login", methods=["GET", "POST"])
 def login():
     if request.method == "POST":
@@ -38,7 +38,7 @@ def login():
             flash("Invalid credentials")
     return render_template("login.html")
 
-
+# Handles the creation of accounts, taking in a username and a password.
 @main.route("/create_account", methods=["POST"])
 def create_account():
     username = request.form["new-username"]
@@ -53,13 +53,12 @@ def create_account():
     flash("Account created successfully!", "success")
     return redirect(url_for("main.profile", user_id=new_user.id))
 
-
+# Handles both the displaying and the altering of the profile page.
 @main.route("/profile/<int:user_id>", methods=["GET", "POST"])
 def profile(user_id):
     if "user_id" not in session or session["user_id"] != user_id:
         flash("You need to log in first", "warning")
         return redirect(url_for("main.login"))
-
     user = User.query.get_or_404(user_id)
 
     if request.method == "POST":
@@ -69,7 +68,6 @@ def profile(user_id):
             user.pr = request.form["pr"]
         if "social_media" in request.form:
             user.social_media = request.form["social_media"]
-
         if "profile_picture" in request.files:
             file = request.files["profile_picture"]
             if file.filename != "":
@@ -86,7 +84,7 @@ def profile(user_id):
 
     return render_template("profile.html", user=user, workout_logs=workout_logs)
 
-
+# This route is for the workout log section of the app, and both displays and posts workout logs
 @main.route("/workout_log/<int:user_id>", methods=["GET", "POST"])
 def workout_log(user_id):
     if "user_id" not in session or session["user_id"] != user_id:
@@ -107,7 +105,7 @@ def workout_log(user_id):
         return redirect(url_for("main.workout_log", user_id=user_id))
     return render_template("workout_log.html")
 
-
+# The group route, which handles both the displaying of groups, and the creation of groups.
 @main.route("/group/<int:user_id>", methods=["GET", "POST"])
 def group(user_id):
     if "user_id" not in session or session["user_id"] != user_id:
@@ -116,11 +114,19 @@ def group(user_id):
     if request.method == "POST":
         name = request.form["name"]
         description = request.form["description"]
-        group = Group(name=name, description=description)
-        db.session.add(group)
-        db.session.commit()
-        group_member = GroupMembers(group_id=group.id, user_id=user_id)
-        db.session.add(group_member)
+        user_id = session['user_id']
+
+        # Checking for duplicate names of groups:
+        existing_group = Group.query.filter_by(name=name).first()
+        if existing_group:
+            flash('A group with this name already exists. Please choose a different name.', 'danger')
+            return redirect(url_for('main.group', user_id=user_id))
+        
+        new_group = Group(name=name, description=description)
+        db.session.add(new_group)
+        db.session.flush()
+        creator_membership = GroupMembers(group_id=new_group.id, user_id=user_id)
+        db.session.add(creator_membership)
         db.session.commit()
         return redirect(url_for("main.group", user_id=user_id))
     user_groups = Group.query.join(GroupMembers, Group.id == GroupMembers.group_id) \
@@ -128,7 +134,7 @@ def group(user_id):
                               .all()
     return render_template("group.html", groups=user_groups)
 
-
+# This route is used for the search feature over multiple pages.
 @main.route("/search", methods=["GET"])
 def search_users():
     search_query = request.args.get("query", "")
@@ -139,13 +145,26 @@ def search_users():
         return jsonify(usernames)
     return jsonify([])
 
-@main.route('/group/<int:group_id>/members', methods=['GET'])
-def get_group_members(group_id):
-    group = Group.query.get(group_id)
-    if not group:
-        return jsonify({'error': 'Group not found'}), 404
-    members = [
-        {'id': user.id, 'username': user.username}
-        for user in group.members
-    ]
-    return jsonify(members)
+# This route is used to add users to groups. Once the group leader searches for a user and clicks the Add Member button,
+# it will add them to the group and display the group on their side
+@main.route("/group/<int:group_id>/add_member", methods=["POST"])
+def add_member(group_id):
+    if "user_id" not in session:
+        flash("You need to login first", "warning")
+        return redirect(url_for("main.login"))
+    user_id = session["user_id"]
+    username = request.json.get("username")
+    user = User.query.filter_by(username=username).first()
+    if not user:
+        return jsonify({"error": "User not found"}), 404
+
+    # Check if the user is already a member of the group
+    existing_membership = GroupMembers.query.filter_by(group_id=group_id, user_id=user.id).first()
+    if existing_membership:
+        return jsonify({"error": "User is already a member of this group"}), 400
+
+    new_membership = GroupMembers(group_id=group_id, user_id=user.id)
+    db.session.add(new_membership)
+    db.session.commit()
+
+    return jsonify({"message": f"User {username} added to the group!"}), 200

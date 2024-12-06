@@ -29,10 +29,10 @@ class UserProfileManager:
         if requestor and user:
             user.friends.append(
                 requestor
-            )  # Assuming `friends` is a relationship in the User model
+            ) 
             user.pending_requests.remove(
                 requestor
-            )  # Assuming `pending_requests` is a relationship
+            )
             db.session.commit()
 
     # Rejecting a friend request
@@ -49,7 +49,7 @@ class UserProfileManager:
         requested_user = User.query.get(requested_id)
         if user and requested_user:
             requested_user.pending_requests.append(
-                user)  # Add to pending requests
+                user)
             db.session.commit()
             return True
         return False

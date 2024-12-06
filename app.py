@@ -22,6 +22,7 @@ def create_app():
     # Initialize database and migrations
     db.init_app(app)
     migrate = Migrate(app, db)
+    app.debug = True
 
     # Register Blueprints
     app.register_blueprint(main)

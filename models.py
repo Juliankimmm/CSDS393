@@ -4,7 +4,7 @@ from flask_sqlalchemy import SQLAlchemy
 
 db = SQLAlchemy()
 
-
+# This class defines the user model for the database
 class User(db.Model):
     __tablename__ = "users"
     id = db.Column(db.Integer, primary_key=True)
@@ -18,7 +18,7 @@ class User(db.Model):
     workout_logs = db.relationship('WorkoutLog', back_populates='user', lazy='dynamic')
     group_memberships = db.relationship('GroupMembers', back_populates='user')
 
-
+# Defines the WorkoutLog table for the database
 class WorkoutLog(db.Model):
     __tablename__ = "workout_logs"
     id = db.Column(db.Integer, primary_key=True)
@@ -31,7 +31,7 @@ class WorkoutLog(db.Model):
     timestamp = db.Column(db.DateTime, default=datetime.utcnow)
     user = db.relationship('User', back_populates='workout_logs')
 
-
+# Defines the Group table for the database
 class Group(db.Model):
     __tablename__ = "groups"
 
@@ -41,7 +41,7 @@ class Group(db.Model):
     privacy_settings = db.Column(db.String(300))
     members = db.relationship('GroupMembers', back_populates='group')
 
-
+# Defines the Post table for the database
 class Post(db.Model):
 
     __tablename__ = "posts"
@@ -61,7 +61,7 @@ class Post(db.Model):
         self.content = caption
         self.media_url = media_url
 
-
+# Defines the GroupMember table for the database
 class GroupMembers(db.Model):
     __tablename__ = "group_members"
     group_id = db.Column(db.Integer, db.ForeignKey("groups.id"), primary_key=True)
@@ -70,7 +70,7 @@ class GroupMembers(db.Model):
     group = db.relationship('Group', back_populates='members')
     user = db.relationship('User', back_populates='group_memberships')
 
-
+# Defines the exercise table for the database
 class Exercise(db.Model):
     __tablename__ = "exercise"
 
@@ -82,7 +82,7 @@ class Exercise(db.Model):
 
     sets = db.relationship("Set", back_populates='exercise', lazy=True)
 
-
+# Defines the set class for the database
 class Set(db.Model):
     __tablename__ = "sets"
 
