@@ -67,7 +67,6 @@ def profile(user_id):
             file.save(filepath)
 
             new_post = Post(user_id=user_id, content=caption, media_url=f'/static/uploads/{filename}')
-            user.add_post(new_post)
             db.session.add(new_post)
             db.session.commit()
             flash("Post uploaded successfully!", "success")
@@ -75,7 +74,7 @@ def profile(user_id):
             flash("Invalid File Name", 'warning')
         return redirect(url_for('main.profile', user_id=user_id))
     
-    posts = user.get_posts()
+    posts = Post.query.filter_by(user_id=user.id).all()
 
     return render_template("profile.html", user=user, posts=posts)
 
