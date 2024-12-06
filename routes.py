@@ -63,10 +63,12 @@ def profile(user_id):
         if file:
             filename = secure_filename(file.filename)
             filepath = os.path.join(current_app.config["UPLOAD_FOLDER"], filename)
-
+            filepath = os.path.normpath(filepath)
+            filepath = filepath.replace("\\", "/")
+            
             file.save(filepath)
 
-            new_post = Post(user_id=user_id, content=caption, media_url=f'/static/uploads/{filename}')
+            new_post = Post(user_id=user_id, content=caption, media_url=f'/static/uploads/posts/{filename}')
             db.session.add(new_post)
             db.session.commit()
             flash("Post uploaded successfully!", "success")

@@ -128,11 +128,11 @@
                 {% for post in posts %}
                 <div class="post">
                     <img src="{{ post.media_url }}" alt="Post Image" class="post-image">
-                    <p class="post-caption">{{ post.caption }}</p>
+                    <p class="post-caption">{{ post.content }}</p>
                 </div>
                 {% endfor %}
             {% else %}
-                <p>No posts yet. Start sharing your moments!</p>
+                <p>No posts yet!</p>
             {% endif %}
         </div>
     </div>
