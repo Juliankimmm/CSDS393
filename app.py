@@ -8,6 +8,9 @@ app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URI', 'sqlite:///test.db')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False  # Disable modification tracking
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'your_secret_key')
+app.config["UPLOAD_FOLDER"] = os.path.join(
+    "C:/Users/kelly/OneDrive/Fall 2024/CSDS 393 - Software Engineering/Collegym_Project",
+    "static/uploads/posts")
 
 # Initialize database
 db.init_app(app)

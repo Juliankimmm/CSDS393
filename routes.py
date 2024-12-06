@@ -1,6 +1,8 @@
-from flask import Blueprint, render_template, request, redirect, url_for, flash, session, jsonify
+from flask import Blueprint, render_template, request, redirect, url_for, flash, session, jsonify, current_app
 from models import db, User, WorkoutLog, Group, Post
 from user_profile_manager import UserProfileManager
+import os
+from werkzeug.utils import secure_filename
 
 main = Blueprint('main', __name__)
 profile_manager = UserProfileManager()
@@ -46,7 +48,7 @@ def create_account():
     flash('Account created successfully!', 'success')
     return redirect(url_for('main.profile', user_id=new_user.id))
 
-@main.route('/profile/<int:user_id>')
+@main.route('/profile/<int:user_id>', methods =['GET', 'POST'])
 def profile(user_id):
     if 'user_id' not in session or session['user_id'] != user_id:
         flash('You need to log in first', 'warning')
@@ -54,6 +56,29 @@ def profile(user_id):
     user = User.query.get_or_404(user_id)
     #posts = Post.query.filter_by(user_id=user_id).all()
     workout_logs = WorkoutLog.query.filter_by(user_id=user_id).all()
+   
+    if request.method == 'POST':
+        file = request.files['media_file']
+        caption = request.form['caption']
+
+        if file:
+            filename = secure_filename(file.filename)
+            filepath = os.path.join(current_app.config["UPLOAD_FOLDER"], filename)
+            
+            directory = os.path.dirname(filepath)
+            if not os.path.exists(directory):
+                os.makedirs(directory)
+                
+            file.save(filepath)
+
+            new_post = Post(user_id=user_id, content=caption, media_url=f'/static/uploads/{filename}')
+            db.session.add(new_post)
+            db.session.commit()
+            flash("Post uploaded successfully!", "success")
+        else:
+            flash("Invalid File Name", 'warning')
+        return redirect(url_for('main.profile', user_id=user_id))
+   
     #return render_template('profile.html', user=user, posts=posts, workout_logs=workout_logs)
     return render_template("profile.html", user=user)
 
