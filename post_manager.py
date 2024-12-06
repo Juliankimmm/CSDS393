@@ -8,8 +8,11 @@ class PostManager:
             raise ValueError("User does not exist")
 
         post = Post(user_id=user.id, content=caption, media_url=media_url)
+        
+        user.add_post(post)
         db.session.add(post)
         db.session.commit()
+
         return post
 
     def validate_upload(self, file_data):

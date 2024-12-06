@@ -4,6 +4,8 @@ from flask import (Blueprint, flash, jsonify, redirect, render_template,
 from werkzeug.utils import secure_filename
 from models import Group, Post, User, WorkoutLog, GroupMembers, db
 from user_profile_manager import UserProfileManager
+import os
+from werkzeug.utils import secure_filename
 
 main = Blueprint("main", __name__)
 profile_manager = UserProfileManager()
@@ -59,30 +61,50 @@ def profile(user_id):
     if "user_id" not in session or session["user_id"] != user_id:
         flash("You need to log in first", "warning")
         return redirect(url_for("main.login"))
+    
     user = User.query.get_or_404(user_id)
+    posts = Post.query.filter_by(user_id=user.id).all()
+    workout_logs = WorkoutLog.query.filter_by(user_id=user_id).all()
 
-    if request.method == "POST":
-        if "bio" in request.form:
-            user.bio = request.form["bio"]
-        if "pr" in request.form:
-            user.pr = request.form["pr"]
-        if "social_media" in request.form:
-            user.social_media = request.form["social_media"]
-        if "profile_picture" in request.files:
-            file = request.files["profile_picture"]
-            if file.filename != "":
-                from werkzeug.utils import secure_filename
+    if request.method == 'POST':
+        if "media_file" in request.files:
+            file = request.files['media_file']
+            caption = request.form['caption']
+            if file:
                 filename = secure_filename(file.filename)
                 filepath = os.path.join(current_app.config["UPLOAD_FOLDER"], filename)
                 file.save(filepath)
-                user.profile_picture = filename
-        db.session.commit()
-        flash("Profile updated successfully!", "success")
-        return redirect(request.url)
 
-    workout_logs = WorkoutLog.query.filter_by(user_id=user_id).all()
+                # Update the media_url to be relative to the static folder
+                media_url = url_for('static', filename='uploads/' + filename)
 
-    return render_template("profile.html", user=user, workout_logs=workout_logs)
+                new_post = Post(user_id=user_id, caption=caption, media_url=media_url)
+                db.session.add(new_post)
+                db.session.commit()
+                flash("Post uploaded successfully!", "success")
+            else:
+                flash("Invalid File Name", 'warning')
+            return redirect(url_for('main.profile', user_id=user_id))
+
+        elif "bio" in request.form: 
+            if "bio" in request.form:
+                user.bio = request.form["bio"]
+            if "pr" in request.form:
+                user.pr = request.form["pr"]
+            if "social_media" in request.form:
+                user.social_media = request.form["social_media"]
+            if "profile_picture" in request.files:
+                file = request.files["profile_picture"]
+                if file.filename != "":
+                    filename = secure_filename(file.filename)
+                    filepath = os.path.join(current_app.config["UPLOAD_FOLDER"], filename)
+                    file.save(filepath)
+                    user.profile_picture = filename
+            db.session.commit()
+            flash("Profile updated successfully!", "success")
+            return redirect(request.url)
+
+    return render_template("profile.html", user=user, workout_logs=workout_logs, posts=posts)
 
 # This route is for the workout log section of the app, and both displays and posts workout logs
 @main.route("/workout_log/<int:user_id>", methods=["GET", "POST"])

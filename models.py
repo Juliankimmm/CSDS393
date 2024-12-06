@@ -47,11 +47,11 @@ class Post(db.Model):
     __tablename__ = "posts"
 
     id = db.Column(db.Integer, primary_key=True)
-    media_url = db.Column(db.String(500), nullable=False) 
-    caption = db.Column(db.String(500), nullable=True) 
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False) 
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    content = db.Column(db.Text, nullable=False)
+    media_url = db.Column(db.String, nullable=True)
+
     user = db.relationship('User', back_populates='posts')
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)  
 
     def __repr__(self):
         return f"<Post {self.id} by User {self.user_id}>"
@@ -60,6 +60,7 @@ class Post(db.Model):
         self.user_id = user_id
         self.content = caption
         self.media_url = media_url
+        
 
 # Defines the GroupMember table for the database
 class GroupMembers(db.Model):

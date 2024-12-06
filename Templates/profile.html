@@ -73,10 +73,10 @@
                 <p><strong>Social Media Links:</strong> {{ user.social_media }}</p>
             </div>
         </div>
-
+    
         <button id="edit-profile-btn" class="btn btn-warning" onclick="toggleEditForm()">Edit Profile</button>
         <button id="settings-btn" class="btn btn-info" onclick="toggleSettingsForm()">Settings</button>
-
+    
         <!-- Edit Profile Form -->
         <div id="edit-profile-form" class="mt-4">
             <form action="{{ url_for('main.profile', user_id=session['user_id']) }}" method="POST" enctype="multipart/form-data">
@@ -103,7 +103,7 @@
                 <button type="submit" class="btn btn-success">Save Changes</button>
             </form>
         </div>
-
+    
         <!-- Settings Form -->
         <div id="settings-form" style="display: none;" class="mt-4">
             <form action="{{ url_for('main.update_preferences', user_id=session['user_id']) }}" method="POST">
@@ -125,49 +125,52 @@
                 <button type="submit" class="btn btn-success">Save Preferences</button>
             </form>
         </div>
-    </div>
-
-    <!-- Post Section (New Feature) -->
-    <div class="post-section" style="margin-top: 30px; padding: 20px; background-color: #f4f4f4; border-radius: 8px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
-        <h2 style="margin-bottom: 20px; color: #333;">Posts</h2>
-        
-        <button id="newPostButton" class="btn btn-primary" data-toggle="modal" data-target="#postModal">
-            New Post
-        </button>
-
-        <div id="posts-list" style="margin-top: 20px;">
-            <!-- Posts will be dynamically loaded here -->
+    
+        <!-- Button for Uploading a Post -->
+        <a href="#" class="btn btn-primary" data-toggle="modal" data-target="#postUploadModal">Upload a Post</a>
+    
+        <!-- Modal for Uploading a Post -->
+        <div class="modal" id="postUploadModal" tabindex="-1" role="dialog">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Upload a New Post</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form action="{{ url_for('main.profile', user_id=user.id) }}" method="POST" enctype="multipart/form-data">
+                            <div class="form-group">
+                                <label for="file-input">Choose Media:</label>
+                                <input type="file" class="form-control" id="file-input" name="media_file" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="caption-input">Caption:</label>
+                                <textarea class="form-control" id="caption-input" name="caption" rows="3" required></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-success">Upload Post</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
         </div>
-        
-        <hr style="width: 100%; border: 1px solid #ccc; margin-top: 20px;">
-    </div>
-
-    <!-- Modal Structure -->
-    <div class="modal fade" id="postModal" tabindex="-1" role="dialog" aria-labelledby="postModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-        <div class="modal-header">
-            <h5 class="modal-title" id="postModalLabel">Create New Post</h5>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-            </button>
+    
+        <!-- Display User's Posts -->
+        <h2>Posts</h2>
+        <div class="post-container">
+            {% if posts %}
+                {% for post in posts %}
+                    <div class="post">
+                        <img src="{{ post.media_url }}" alt="Post Image" class="post-image">
+                        <p class="post-caption">{{ post.caption }}</p>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p>No posts yet. Start sharing your moments!</p>
+            {% endif %}
         </div>
-        <div class="modal-body">
-            <!-- Media Upload (e.g., Image or Video) -->
-            <input type="file" class="form-control mb-3" id="mediaUpload">
-            
-            <!-- Caption Input -->
-            <textarea class="form-control" id="caption" placeholder="Enter your caption here..." rows="3"></textarea>
-        </div>
-        <div class="modal-footer">
-            <!-- Close Button -->
-            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-            <!-- Post Button (no functionality yet) -->
-            <button type="button" class="btn btn-primary">Post</button>
-        </div>
-        </div>
-    </div>
-    </div>
+    </div>    
 
     <!-- Bottom Navigation Bar -->
     <nav class="navbar fixed-bottom navbar-light bg-light">
