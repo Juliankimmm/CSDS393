@@ -10,7 +10,28 @@ class User(db.Model):
     bio = db.Column(db.String(300))
     pr = db.Column(db.String(150))
     social_media = db.Column(db.String(300))
-    posts = db.relationship('Post', backref='author', lazy=True) 
+    posts = []
+
+    def __init__(self, username, password, bio="", pr="", social_media=""):
+        self.username = username
+        self.password = password
+        self.bio = bio
+        self.pr = pr
+        self.social_media = social_media
+        self.posts = []
+
+
+    def add_post(self, post):
+        if isinstance(post, Post):
+            post._user_id = self.id 
+            self.posts.append(post)
+        else:
+            raise TypeError("Expected a Post object.")
+
+    def get_posts(self):
+        """Returns the list of posts for this user."""
+        return self.posts
+
 
 
 class WorkoutLog(db.Model):
@@ -72,7 +93,6 @@ class Post(db.Model):
     __tablename__ = 'posts'
 
     id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     content = db.Column(db.Text, nullable=False)
     media_url = db.Column(db.String, nullable=True)
 

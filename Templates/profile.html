@@ -91,6 +91,7 @@
                 <button type="submit" class="btn btn-success">Save Preferences</button>
             </form>
         </div>
+
          <!-- Button for Uploading a Post -->
          <a href="#" class="btn btn-primary" data-toggle="modal" data-target="#postUploadModal">Upload a Post</a>
 
@@ -119,6 +120,20 @@
                 </div>
                 </div>
             </div>
+        </div>
+        <!-- Display User's Posts -->
+        <h2>Posts</h2>
+        <div class="post-container">
+            {% if posts %}
+                {% for post in posts %}
+                <div class="post">
+                    <img src="{{ post.media_url }}" alt="Post Image" class="post-image">
+                    <p class="post-caption">{{ post.content }}</p>
+                </div>
+                {% endfor %}
+            {% else %}
+                <p>No posts yet. Start sharing your moments!</p>
+            {% endif %}
         </div>
     </div>
 

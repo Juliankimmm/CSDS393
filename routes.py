@@ -54,7 +54,6 @@ def profile(user_id):
         flash('You need to log in first', 'warning')
         return redirect(url_for('main.login'))
     user = User.query.get_or_404(user_id)
-    #posts = Post.query.filter_by(user_id=user_id).all()
     workout_logs = WorkoutLog.query.filter_by(user_id=user_id).all()
    
     if request.method == 'POST':
@@ -64,23 +63,21 @@ def profile(user_id):
         if file:
             filename = secure_filename(file.filename)
             filepath = os.path.join(current_app.config["UPLOAD_FOLDER"], filename)
-            
-            directory = os.path.dirname(filepath)
-            if not os.path.exists(directory):
-                os.makedirs(directory)
-                
+
             file.save(filepath)
 
             new_post = Post(user_id=user_id, content=caption, media_url=f'/static/uploads/{filename}')
+            user.add_post(new_post)
             db.session.add(new_post)
             db.session.commit()
             flash("Post uploaded successfully!", "success")
         else:
             flash("Invalid File Name", 'warning')
         return redirect(url_for('main.profile', user_id=user_id))
-   
-    #return render_template('profile.html', user=user, posts=posts, workout_logs=workout_logs)
-    return render_template("profile.html", user=user)
+    
+    posts = user.get_posts()
+
+    return render_template("profile.html", user=user, posts=posts)
 
 @main.route('/workout_log/<int:user_id>', methods=['GET', 'POST'])
 def workout_log(user_id):
